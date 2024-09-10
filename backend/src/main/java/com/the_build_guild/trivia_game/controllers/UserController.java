@@ -5,7 +5,6 @@ import com.the_build_guild.trivia_game.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,17 +29,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(Model model){
+    @GetMapping("/getAll")
+    public ResponseEntity<List<User>> getAllUsers(){
         userList = userService.getAllUsers();
-        model.addAttribute("users", userList);
         return ResponseEntity.ok(userList);
     }
 
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody User user, Model model){
+    public ResponseEntity<String> createUser(@RequestBody User user){
         userService.createUser(user);
-        model.addAttribute("user", user);
         return ResponseEntity.ok("Successfully created user");
     }
 
