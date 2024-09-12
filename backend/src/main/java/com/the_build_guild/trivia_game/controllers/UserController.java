@@ -15,14 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.*;
 
 @RequestMapping("/users")
 @RestController
 public class UserController {
     
     private final UserService userService;
-    private List<User> userList = new ArrayList<>();
 
     @Autowired
     public UserController(UserService userService) {
@@ -31,8 +29,8 @@ public class UserController {
 
     @GetMapping("/getAll")
     public ResponseEntity<List<User>> getAllUsers(){
-        userList = userService.getAllUsers();
-        return ResponseEntity.ok(userList);
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 
     @PostMapping
