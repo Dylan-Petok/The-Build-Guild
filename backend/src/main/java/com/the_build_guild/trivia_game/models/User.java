@@ -1,24 +1,24 @@
 package com.the_build_guild.trivia_game.models;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+
 
 import lombok.*;
 
 @Data
-@Entity 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "game_user")
+@Document(collection = "game_user")
 @EqualsAndHashCode(callSuper = false)
 public class User{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long Id;
+    private String Id;
 
 
-    @Column(unique = true)
     private String username;
 
 

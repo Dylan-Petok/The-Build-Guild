@@ -25,12 +25,12 @@ public class UserService{
         return userRepository.save(user);
     }
 
-    public User getUserById(Long id) {
+    public User getUserById(String id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
-    public User updateUser(Long id, User userDetail) {
+    public User updateUser(String id, User userDetail) {
        User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -40,7 +40,7 @@ public class UserService{
         return userRepository.save(user);
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(String id) {
         userRepository.deleteById(id);
     }
 }
