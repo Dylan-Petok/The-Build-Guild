@@ -11,3 +11,7 @@ server:
     error:
         include-message: always
     shutdown: "graceful"
+
+data:
+  initializer:
+    enabled: false
