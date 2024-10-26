@@ -1,9 +1,8 @@
 package com.the_build_guild.trivia_game.models;
+import java.lang.annotation.Inherited;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-
 
 import lombok.*;
 
@@ -11,16 +10,12 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "users")
+@Document(collection = "leaderboard")
 @EqualsAndHashCode(callSuper = false)
-public class User{
-
+public class Leaderboard {
     @Id
-    private String Id;
-    private String username;
-    private String email;
-    private String passwordHash;
-    private String[] friends;
-    private String[] gamesPlayed;
-    private Integer winCount;
+    private String leaderBoardId;
+    private String userId;
+    private Integer score;
+    private String rank;
 }
