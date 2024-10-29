@@ -14,8 +14,10 @@
 ## Starting the Servers
   ### Backend Server
     1. Navigate to the backend directory
-    2. Execute the command: `./gradlew bootRun`
-    3. Open a browser and navigate to http://localhost:8080
+    2. Execute the command : `./gradlew clean`
+    3. Execute the command : `./gradlew build`
+    4. Execute the command: `./gradlew bootRun`
+    5. Open a browser and navigate to http://localhost:8080
 
   ### Frontend Server
     1. Navigate to the frontend directory
