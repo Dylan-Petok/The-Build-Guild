@@ -2,6 +2,10 @@ package com.the_build_guild.trivia_game.controllers;
 
 import com.the_build_guild.trivia_game.models.User;
 import com.the_build_guild.trivia_game.services.UserService;
+import com.the_build_guild.trivia_game.dtos.UserCreationDTO;
+import com.the_build_guild.trivia_game.dtos.UserLoginDTO;
+
+
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,17 +16,48 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.util.List;
 
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @RestController
 public class UserController {
     
     private final UserService userService;
 
+
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createAccount(@RequestBody UserCreationDTO userCreationDTO) {
+        try{
+            User user = userService.createUser(userCreationDTO);
+            if (user != null) {
+                return ResponseEntity.ok("Account created successfully");
+            } else {
+                return ResponseEntity.status(400).body("Failed to create account");
+            }
+        }catch(Exception e) {
+            return ResponseEntity.status(500).body("An error occured while creating account");
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO) {
+        try{
+            User user = userService.authenticateUser(userLoginDTO);
+            if (user != null) {
+                return ResponseEntity.ok("Account logged in successfully");
+            } else {
+                return ResponseEntity.status(400).body("Failed to login account");
+            }
+        }catch(Exception e) {
+            return ResponseEntity.status(500).body("An error occured while loggin in account");
+        }
+    }
+    
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;

@@ -1,14 +1,23 @@
 package com.the_build_guild.trivia_game.services;
 
+import com.the_build_guild.trivia_game.dtos.UserCreationDTO;
+import com.the_build_guild.trivia_game.dtos.UserLoginDTO;
 import com.the_build_guild.trivia_game.models.User;
 import com.the_build_guild.trivia_game.repositories.UserRepository;
+
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 @Service
 public class UserService {
+        private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
+    
     @Autowired
     private UserRepository userRepository;
 
@@ -41,4 +50,24 @@ public class UserService {
     public void deleteUser(String id) {
         userRepository.deleteById(id);
     }
+
+     public User createUser(UserCreationDTO userCreationDTO) {
+        User user = new User();
+        user.setUsername(userCreationDTO.getUserName());
+        user.setEmail(userCreationDTO.getEmailAddr());
+        user.setPasswordHash(userCreationDTO.getPassword()); // Ensure to hash the password before saving
+        return userRepository.save(user);
+    }
+    
+    public User authenticateUser(UserLoginDTO userLoginDTO) {
+        logger.info("Authenticating user: {}", userLoginDTO.getUserName());
+        User user = userRepository.findByUsername(userLoginDTO.getUserName());
+        if (user != null && user.getPasswordHash().equals(userLoginDTO.getPassword())) {
+            logger.info("Authentication successful for user: {}", userLoginDTO.getUserName());
+            return user;
+        }
+        logger.warn("Authentication failed for user: {}", userLoginDTO.getUserName());
+        return null;
+    }
+    
     }

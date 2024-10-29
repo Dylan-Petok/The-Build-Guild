@@ -40,8 +40,15 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	    // Spring Boot Starter Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+	// BCrypt Password Encoder
+    implementation 'org.springframework.security:spring-security-crypto'
 	}
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+
+
