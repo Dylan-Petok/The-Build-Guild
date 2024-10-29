@@ -1,14 +1,24 @@
+# Compilation and Run Instructions
 
-Frontend done through React, Backend done with SpringBoot and MySQL.
+## Requirements
+  **JDK-22**, 
+  **Node.js**
+  
+### JDK-22 Installation
+  
+  
+### NodeJS
+  Navigate to: https://nodejs.org/en and install the latest LTS package.
 
-Uses jdk-22
-Uses node.js
-Recommend using Postman to view data on backend.
 
+## Starting the Servers
+  ### Backend Server
+    1. Navigate to the backend directory
+    2. Execute the command: `./gradlew bootRun`
+    3. Open a browser and navigate to http://localhost:8080
 
-
-To start backend server, use command "./gradlew bootRun", runs on http://localhost:8080
-
-To start frontend server, use command "npm start', runs on http://localhost:3000
-
+  ### Frontend Server
+    1. Navigate to the frontend directory
+    2. Execute the command: `npm start`
+    3. Open a browser and navigate to http://localhost:3000
 
