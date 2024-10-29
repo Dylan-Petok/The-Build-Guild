@@ -15,3 +15,7 @@ server:
 data:
   initializer:
     enabled: false
+
+trivia: 
+  api:
+    url: https://opentdb.com/api.php
