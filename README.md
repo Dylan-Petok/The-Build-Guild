@@ -1,10 +1,6 @@
 
 Frontend done through React, Backend done with SpringBoot and MySQL.
 
-Run the init_database.sql file in your mysql database to create the proper structure.
-
-
-
 Uses jdk-22
 Uses node.js
 Recommend using Postman to view data on backend.
