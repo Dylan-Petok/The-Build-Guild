@@ -1,11 +1,11 @@
 # Compilation and Run Instructions
 
 ## Requirements
-  **JDK-22**, 
+  **JDK-23**, 
   **Node.js**
   
-### JDK-22 Installation
-  
+### JDK-23 Installation
+  Navigate to: https://www.oracle.com/java/technologies/downloads/ and install the package for your operating system.
   
 ### NodeJS
   Navigate to: https://nodejs.org/en and install the latest LTS package.
@@ -24,3 +24,5 @@
     2. Execute the command: `npm start`
     3. Open a browser and navigate to http://localhost:3000
 
+## Running Tests
+If using Visual Studio Code -> Install extension "Test Runner for Java" authored by Microsoft. Once installed click on the new testing extension in the extensions bar. Execute desired tests.
