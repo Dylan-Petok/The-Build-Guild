@@ -32,7 +32,7 @@ public class TriviaService {
     }
 
     public TriviaResponseDTO getQuestions(TriviaRequestDTO triviaReqDTO) {
-        String url = triviaApiUrl + "?amount=" + triviaReqDTO.getNumberOfQuestions() + "&category=" + triviaReqDTO.getCategory() + "&difficulty=" + triviaReqDTO.getDifficulty();
+        String url = triviaApiUrl + "?amount=" + triviaReqDTO.getNumberOfQuestions() + "&category=" + triviaReqDTO.getCategory() + "&difficulty=" + triviaReqDTO.getDifficulty() + "&encode=url3986";
          // Log the URL
         logger.info("Making API request to URL: {}", url);
         TriviaResponseDTO response = restTemplate.getForObject(url, TriviaResponseDTO.class);

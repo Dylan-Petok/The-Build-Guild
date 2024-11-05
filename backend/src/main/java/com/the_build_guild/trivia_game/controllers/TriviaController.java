@@ -27,7 +27,6 @@ public class TriviaController {
     @Autowired
     private TriviaService triviaService;
     
-    //register a new user endpoint
     @PostMapping("/play")
     public ResponseEntity<?> registerUser(@RequestBody TriviaRequestDTO triviaReqDTO){
         logger.info("Register request received for user: {}", triviaReqDTO);

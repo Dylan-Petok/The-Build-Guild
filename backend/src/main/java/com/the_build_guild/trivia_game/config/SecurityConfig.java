@@ -27,6 +27,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/users/create").permitAll()
             .requestMatchers("/api/users/login").permitAll()
+            .requestMatchers("/api/trivia/play").permitAll()
+            .requestMatchers("/api/trivia/status").permitAll()
                 .anyRequest().authenticated()
             );
         return http.build();
