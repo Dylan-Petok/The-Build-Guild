@@ -36,3 +36,14 @@
     flex-direction: column;
     margin-bottom: 10vh;
 }
+.navbar-link {
+    color: white;
+    text-decoration: none;
+    padding: 0 15px;
+    transition: color 0.3s;
+}
+
+.navbar-link:hover {
+    color: #61dafb; /* Matches button hover effect */
+}
+
