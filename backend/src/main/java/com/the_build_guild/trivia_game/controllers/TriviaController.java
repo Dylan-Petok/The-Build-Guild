@@ -1,5 +1,6 @@
 package com.the_build_guild.trivia_game.controllers;
 
+import com.the_build_guild.trivia_game.services.GameService;
 import com.the_build_guild.trivia_game.services.TriviaService;
 
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.the_build_guild.trivia_game.dtos.TriviaRequestDTO;
 import com.the_build_guild.trivia_game.dtos.TriviaResponseDTO;
+import com.the_build_guild.trivia_game.models.Game;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,9 @@ public class TriviaController {
 
     @Autowired
     private TriviaService triviaService;
+
+     @Autowired
+    private GameService gameService;
     
     @PostMapping("/play")
     public ResponseEntity<?> registerUser(@RequestBody TriviaRequestDTO triviaReqDTO){
@@ -44,4 +49,18 @@ public class TriviaController {
     public ResponseEntity<String> getStatus() {
         return ResponseEntity.ok("Trivia API is running");
     }
+
+    @PostMapping("/saveGame")
+    public ResponseEntity<?> saveGame(@RequestBody Game game) {
+        logger.info("Save game request received: {}", game);
+        try {
+            Game savedGame = gameService.saveGame(game);
+            logger.info("Game successfully saved: {}", savedGame);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedGame);
+        } catch (Exception ex) {
+            logger.error("Error saving game: {}", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error saving game\"}");
+        }
+    }
+    
 }

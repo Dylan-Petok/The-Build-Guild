@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../css/Playpage.css'
 
 const Playpage = () => {
@@ -12,6 +13,9 @@ const Playpage = () => {
     const[questions, setQuestions] = useState([]);
     const[currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const[selectedOption, setSelectedOption] = useState('');
+    const [correctAnswers, setCorrectAnswers] = useState(0);
+    const navigate = useNavigate();
+
 
     
     useEffect(() => {
@@ -71,11 +75,47 @@ const Playpage = () => {
     };
 
     const handleNextQuestion = () => {
+            // Check if the selected option is correct
+        if (selectedOption === questions[currentQuestionIndex].correct_answer) {
+            setCorrectAnswers(correctAnswers + 1);
+        }
+        
         if(currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
             setSelectedOption('');
         } else {
             console.log('Quiz completed');
+
+            const gameData = {
+                userIds: [/* user ID(s) */],
+                topic: formData.category,
+                difficulty: formData.difficulty,
+                correctAnswers: correctAnswers,
+                totalQuestions: questions.length,
+                datePlayed: new Date()
+            };
+            console.log(gameData);
+
+             // Send game data to the backend
+        fetch('http://localhost:8080/api/trivia/saveGame', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(gameData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Game data saved:', data);
+            // Handle success response
+        })
+        .catch(error => {
+            console.error('Error saving game data:', error);
+            // Handle error response
+        });
+
+        //Navigate to the results page
+        navigate('/results', { state: { correctAnswers, totalQuestions: questions.length } });
         }
     };
 

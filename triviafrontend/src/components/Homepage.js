@@ -1,7 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../css/HomePage.css';
 
 const HomePage = () => {
+    const navigate = useNavigate();
+
+    const handleStartGame = () => {
+        navigate('/play');
+    };
+
     return (
         <div className="homepage-container">
             <header className="homepage-header">
@@ -16,7 +23,7 @@ const HomePage = () => {
                         Think you know it all? Click on the 'Start Game' button and answer trivia questions from various categories. 
                         The faster you answer, the more points you earn!
                     </p>
-                    <button className="start-game-btn">Start Game</button>
+                    <button className="start-game-btn" onClick={handleStartGame}>Start Game</button>
                 </div>
 
                 <div className="features-section">
