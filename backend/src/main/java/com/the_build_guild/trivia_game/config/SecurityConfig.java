@@ -29,6 +29,7 @@ public class SecurityConfig {
             .requestMatchers("/api/users/login").permitAll()
             .requestMatchers("/api/trivia/play").permitAll()
             .requestMatchers("/api/trivia/status").permitAll()
+            .requestMatchers("/api/trivia/saveGame").permitAll()
                 .anyRequest().authenticated()
             );
         return http.build();
