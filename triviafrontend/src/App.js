@@ -7,6 +7,7 @@ import Signinpage from './components/Signinpage';
 import Signuppage from './components/Signuppage';
 import Leaderboardpage from './components/Leaderboardpage';
 import Playpage from './components/Playpage';
+import TriviaResults from './components/TriviaResults'; 
 import { AuthProvider } from './AuthContext';
 import './App.css';
 
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/signup" element={<Signuppage />} />
                 <Route path="/leaderboard" element={<Leaderboardpage />} />
                 <Route path="/play" element={<Playpage />} />
+                <Route path="/results" element={<TriviaResults />} />
               </Routes>
             </main>
             <Footer />
