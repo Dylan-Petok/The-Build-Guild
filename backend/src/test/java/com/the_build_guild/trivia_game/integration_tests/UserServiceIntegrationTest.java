@@ -1,4 +1,4 @@
-package com.the_build_guild.trivia_game;
+package com.the_build_guild.trivia_game.integration_tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -197,6 +197,7 @@ public class UserServiceIntegrationTest {
 
         assertNull(authenticatedUser, "User should be null for failed authentication");
     }
+
 
 
 }

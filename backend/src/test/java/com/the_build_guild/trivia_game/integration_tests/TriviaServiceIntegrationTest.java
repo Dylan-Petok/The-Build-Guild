@@ -1,4 +1,4 @@
-package com.the_build_guild.trivia_game;
+package com.the_build_guild.trivia_game.integration_tests;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
