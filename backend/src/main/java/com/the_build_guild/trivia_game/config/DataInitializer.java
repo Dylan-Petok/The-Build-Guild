@@ -29,8 +29,6 @@ public class DataInitializer {
     @Autowired
     private GameRepository gameRepository;
 
-    @Autowired
-    private LeaderboardRepository leaderboardRepository;
 
     
     @Autowired
@@ -47,7 +45,6 @@ public class DataInitializer {
                 // Clear existing data
             userRepository.deleteAll();
             gameRepository.deleteAll();
-            leaderboardRepository.deleteAll();
             friendGameStatsRepository.deleteAll();
 
 
@@ -57,8 +54,6 @@ public class DataInitializer {
                     .email("john@example.com")
                     .passwordHash("hashed_password")
                     .friends(new String[]{"friend1", "friend2"})
-                    .gamesPlayed(new String[]{"game1", "game2"})
-                    .winCount(5)
                     .build();
 
             User user2 = User.builder()
@@ -66,8 +61,6 @@ public class DataInitializer {
                     .email("jane@example.com")
                     .passwordHash("hashed_password2")
                     .friends(new String[]{"friend3", "friend4"})
-                    .gamesPlayed(new String[]{"game3", "game4"})
-                    .winCount(3)
                     .build();
 
             userRepository.saveAll(Arrays.asList(user1, user2));
@@ -76,7 +69,6 @@ public class DataInitializer {
        
             // Create dummy games
             Game game1 = Game.builder()
-                    .userIds(Collections.singletonList(user1.getId()))
                     .topic("Science")
                     .difficulty("Medium")
                     .correctAnswers(8)
@@ -85,7 +77,6 @@ public class DataInitializer {
                     .build();
 
             Game game2 = Game.builder()
-                    .userIds(Arrays.asList(user1.getId(), user2.getId()))
                     .topic("History")
                     .difficulty("Hard")
                     .correctAnswers(5)
@@ -95,23 +86,6 @@ public class DataInitializer {
 
             gameRepository.saveAll(Arrays.asList(game1, game2));
             logger.info("Games saved: " + gameRepository.findAll());
-
-      
-            // Create dummy leaderboards
-            Leaderboard leaderboard1 = Leaderboard.builder()
-                    .userId(user1.getId())
-                    .score(100)
-                    .rank("A")
-                    .build();
-
-            Leaderboard leaderboard2 = Leaderboard.builder()
-                    .userId(user2.getId())
-                    .score(80)
-                    .rank("B")
-                    .build();
-
-            leaderboardRepository.saveAll(Arrays.asList(leaderboard1, leaderboard2));
-            logger.info("Leaderboards saved: " + leaderboardRepository.findAll());
 
               // Create dummy friend game stats
               FriendGameStats stats1 = FriendGameStats.builder()

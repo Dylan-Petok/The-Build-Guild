@@ -15,10 +15,11 @@ import lombok.*;
 public class Game {
     @Id
     private String gameId;
-    private List<String> userIds;
+    private String userId;
     private String topic;
     private String difficulty;
     private Integer correctAnswers;
     private Integer totalQuestions;
     private Date datePlayed;
+    private Integer score;
 }

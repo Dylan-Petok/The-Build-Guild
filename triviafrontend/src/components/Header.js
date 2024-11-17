@@ -1,15 +1,34 @@
 import React from 'react';
 import { useAuth } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import '../css/Header.css';
 
 function Header() {
     const { isAuthenticated, logout } = useAuth();
     const navigate = useNavigate();
 
+
     const handleLogout = () => {
-        logout();
-        navigate('/');
+        fetch('http://localhost:8080/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }).then(response => {
+            if (response.ok) {
+                logout(() => {
+                    toast.success('Successfully logged out!');
+                    navigate('/');
+                });
+            } else {
+                console.error('Logout failed');
+                toast.error('Logout failed');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            toast.error('An error occurred. Please try again.');
+        });
     };
 
     return (
@@ -29,7 +48,7 @@ function Header() {
                     <div className="auth-item">
                     {isAuthenticated ? (
                             <li className="navbar-item">
-                                <a href="/" onClick={handleLogout} className="navbar-link">Logout</a>
+                                <button onClick={handleLogout} className="navbar-link logout">Logout</button>
                             </li>
                         ) : (
                             <>

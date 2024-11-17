@@ -1,3 +1,7 @@
 .App-main{
     padding-top: 10vh;
 }
+
+body {
+    font-family: 'Poppins', sans-serif;
+}

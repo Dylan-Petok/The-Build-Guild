@@ -21,6 +21,6 @@ public class User{
     private String email;
     private String passwordHash;
     private String[] friends;
-    private String[] gamesPlayed;
-    private Integer winCount;
+    private Integer gamesPlayedCount;
+    private Integer score;
 }

@@ -2,12 +2,17 @@ package com.the_build_guild.trivia_game.controllers;
 
 import com.the_build_guild.trivia_game.models.User;
 import com.the_build_guild.trivia_game.services.UserService;
+import com.the_build_guild.trivia_game.services.GameService;
+import com.the_build_guild.trivia_game.dtos.ProfileInfoDTO;
 import com.the_build_guild.trivia_game.dtos.UserCreationDTO;
 import com.the_build_guild.trivia_game.dtos.UserLoginDTO;
 
 
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.apache.catalina.connector.Response;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -26,7 +33,12 @@ import java.util.List;
 @RestController
 public class UserController {
     
+     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+
     private final UserService userService;
+
+    private final GameService gameService;
 
 
 
@@ -35,44 +47,67 @@ public class UserController {
         try{
             User user = userService.createUser(userCreationDTO);
             if (user != null) {
-                return ResponseEntity.ok("Account created successfully");
+                String token = userService.generateToken(user);
+                setAuthentication(user);
+                return ResponseEntity.ok("{\"token\": \"" + token + "\"}");
             } else {
-                return ResponseEntity.status(400).body("Failed to create account");
+                return ResponseEntity.status(400).body("{\"message\": \"Failed to login account\"}");
             }
         }catch(Exception e) {
-            return ResponseEntity.status(500).body("An error occured while creating account");
+            return ResponseEntity.status(500).body("{\"message\": \"An error occurred while logging in account\"}");
         }
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO) {
+        logger.info("Login attempt for user: {}", userLoginDTO);
         try{
             User user = userService.authenticateUser(userLoginDTO);
             if (user != null) {
-                return ResponseEntity.ok("Account logged in successfully");
+                String token = userService.generateToken(user);
+                setAuthentication(user);
+                return ResponseEntity.ok("{\"token\": \"" + token + "\"}");
             } else {
-                return ResponseEntity.status(400).body("Failed to login account");
+                return ResponseEntity.status(400).body("{\"message\": \"Failed to login account\"}");
             }
         }catch(Exception e) {
-            return ResponseEntity.status(500).body("An error occured while loggin in account");
+            return ResponseEntity.status(500).body("{\"message\": \"An error occurred while logging in account\"}");
         }
     }
     
+    @GetMapping("/profileInfo")
+    public ResponseEntity<?> profileInfo(){
+        try{
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username = userDetails.getUsername();
+            User user = userService.findByUsername(username);
+            int globalRank = userService.getGlobalRank(user.getId());
+            int highestScoreInGame = gameService.getHighestScoreInGame(user.getId());
+            int currentScore = user.getScore();
+            int gamesPlayedCount = user.getGamesPlayedCount();
+            ProfileInfoDTO profileInfo = ProfileInfoDTO.builder()
+                .gamesPlayedCount(gamesPlayedCount)
+                .highestScoreInGame(highestScoreInGame)
+                .globalRank(globalRank)
+                .currentScore(currentScore)
+                .build();
+            return ResponseEntity.ok(profileInfo);
+        }catch(Exception e){
+            return ResponseEntity.status(500).body("An error occured while fetching profile information");
+        }
+    }
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, GameService gameService) {
         this.userService = userService;
+        this.gameService = gameService;
+
     }
 
     @GetMapping("/getAll")
     public ResponseEntity<List<User>> getAllUsers(){
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
-    }
-
-    @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody User user){
-        userService.createUser(user);
-        return ResponseEntity.ok("Successfully created user");
     }
 
     @GetMapping("/{id}")
@@ -91,5 +126,23 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<?> testEndpoint() {
+        logger.info("Test endpoint accessed");
+        return ResponseEntity.ok("Test endpoint is accessible");
+    }
+
+    
+    private void setAuthentication(User user) {
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUsername())
+                .password(user.getPasswordHash())
+                .roles("USER")
+                .build();
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

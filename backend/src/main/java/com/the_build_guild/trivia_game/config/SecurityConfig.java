@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -29,8 +30,16 @@ public class SecurityConfig {
             .requestMatchers("/api/users/login").permitAll()
             .requestMatchers("/api/trivia/play").permitAll()
             .requestMatchers("/api/trivia/status").permitAll()
-                .anyRequest().authenticated()
-            );
+            .requestMatchers("/api/trivia/saveGame").permitAll()
+            .requestMatchers("/logout").permitAll()
+                .anyRequest().permitAll()
+            )
+            .logout(logout -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()) // Return 200 OK instead of redirecting
+            .permitAll()
+        );
+
         return http.build();
     }
 
@@ -39,7 +48,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Adjust this to match your frontend URL
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:3000/signin" )); // Adjust this to match your frontend URL
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         source.registerCorsConfiguration("/**", config);
