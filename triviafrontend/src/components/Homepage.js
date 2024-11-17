@@ -12,7 +12,7 @@ const HomePage = () => {
     return (
         <div className="homepage-container">
             <header className="homepage-header">
-                <h1>Welcome to Trivia Challenge!</h1>
+                <h1>Welcome to Trivia Trove!</h1>
                 <p className="tagline">Test your knowledge and climb the leaderboard!</p>
             </header>
 

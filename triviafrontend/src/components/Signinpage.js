@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
+import { toast } from 'react-toastify';
 import '../css/AuthPage.css';
 
 const SigninPage = () => {
@@ -33,14 +34,23 @@ const SigninPage = () => {
                 body: JSON.stringify(formData)
             });
             if (response.ok) {
-                console.log('Signin successful');
+                const data = await response.json(); // Parse the response JSON
+                localStorage.setItem('token', data.token);
+                toast.success('Successfully logged in!');
                 login();
-                navigate('/');
+                navigate('/profile');
             } else {
-                console.error('Signin failed');
+                const errorText = await response.text();
+                try {
+                    const errorData = JSON.parse(errorText); // Try to parse as JSON
+                    toast.error(`Signin failed: ${errorData.message}`);
+                } catch (e) {
+                    toast.error(`Signin failed: ${errorText}`); // Fallback to text
+                }
             }
         } catch (error) {
             console.error('Error:', error);
+            toast.error('An error occurred. Please try again.');
         }
     };
 

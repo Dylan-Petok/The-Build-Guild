@@ -7,7 +7,7 @@ const AllTimeLeaderboard = () =>{
 
     useEffect(() => {
         // Fetch leaderboard data from the backend
-        fetch('http://localhost:8080/api/leaderboard/alltime')
+        fetch('http://localhost:8080/api/leaderboard/allTime')
             .then(response => response.json())
             .then(data => setLeaderboard(data))
             .catch(error => console.error('Error fetching leaderboard data:', error));
@@ -26,7 +26,7 @@ const AllTimeLeaderboard = () =>{
                 </thead>
                 <tbody>
                     {leaderboard.map((user, index) => (
-                        <tr key={user.userId}>
+                        <tr key={user.username}>
                             <td>{index + 1}</td>
                             <td>{user.username}</td>
                             <td>{user.score}</td>

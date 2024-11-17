@@ -41,6 +41,16 @@
     text-decoration: none;
     padding: 0 15px;
     transition: color 0.3s;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.navbar-link.logout{
+    background-color: transparent;
+    border: none;
 }
 
 .navbar-link:hover {

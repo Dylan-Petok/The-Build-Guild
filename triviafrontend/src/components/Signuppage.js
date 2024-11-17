@@ -2,11 +2,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
+import { toast } from 'react-toastify';
 import '../css/AuthPage.css';
 
 const SignUpPage = () => {
     const [formData, setFormData] = useState({
         username: '',
+        email: '',
         password: '',
         confirmPassword: ''
     });
@@ -28,24 +30,32 @@ const SignUpPage = () => {
             alert('Passwords do not match.');
             return;
         }
-        console.log('Signup request sent with data:', formData);
+           // Create an object excluding confirmPassword to log what data was sent over
+        const dataToSend = {
+            username: formData.username,
+            email: formData.email,
+            password: formData.password
+        };
+        console.log('Signup request sent with data:', dataToSend);
         try {
-            const response = await fetch('http://localhost:8080/api/users/register', {
+            const response = await fetch('http://localhost:8080/api/users/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     username: formData.username,
+                    email: formData.email,
                     password: formData.password
                 })
             });
             if (response.ok) {
-                console.log('Signup successful');
+                toast.success('Account successfully created!');
                 login();
                 navigate('/');
             } else {
-                console.error('Signup failed');
+                const errorData = await response.json()
+                toast.error(`Sign up failed: ${errorData.message}`);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -61,6 +71,14 @@ const SignUpPage = () => {
                     type="text"
                     name="username"
                     value={formData.username}
+                    onChange={handleChange}
+                    required
+                />
+                <label>Email:</label>
+                <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
                     onChange={handleChange}
                     required
                 />
