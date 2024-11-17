@@ -47,9 +47,15 @@ function Header() {
                     
                     <div className="auth-item">
                     {isAuthenticated ? (
+                        <>
+                            <li className="navbar-item">
+                                <a href="/profile" className="navbar-link">Profile</a>
+                            </li>
+                            
                             <li className="navbar-item">
                                 <button onClick={handleLogout} className="navbar-link logout">Logout</button>
                             </li>
+                        </>
                         ) : (
                             <>
                                 <li className="navbar-item">
