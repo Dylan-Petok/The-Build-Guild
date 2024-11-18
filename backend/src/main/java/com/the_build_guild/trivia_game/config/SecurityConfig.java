@@ -31,6 +31,8 @@ public class SecurityConfig {
             .requestMatchers("/api/trivia/play").permitAll()
             .requestMatchers("/api/trivia/status").permitAll()
             .requestMatchers("/api/trivia/saveGame").permitAll()
+            .requestMatchers("/api/leaderboard/allTime").permitAll()
+            .requestMatchers("/api/users/profile").permitAll()
             .requestMatchers("/logout").permitAll()
                 .anyRequest().permitAll()
             )

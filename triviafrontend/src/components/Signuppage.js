@@ -50,6 +50,9 @@ const SignUpPage = () => {
                 })
             });
             if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('username', data.username);
                 toast.success('Account successfully created!');
                 login();
                 navigate('/');

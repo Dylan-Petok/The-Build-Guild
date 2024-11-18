@@ -20,6 +20,12 @@ public class Game {
     private String difficulty;
     private Integer correctAnswers;
     private Integer totalQuestions;
+    private Integer gameScore; // New field for game score
     private Date datePlayed;
-    private Integer score;
+
+    
+    // Add getScore method
+    public Integer getScore() {
+        return gameScore;
+    }
 }
