@@ -26,7 +26,8 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
+import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 
 @RequestMapping("/api/users")
@@ -66,7 +67,13 @@ public class UserController {
             if (user != null) {
                 String token = userService.generateToken(user);
                 setAuthentication(user);
-                return ResponseEntity.ok("{\"token\": \"" + token + "\"}");
+
+                  // Create a response map
+                Map<String, String> response = new HashMap<>();
+                response.put("token", token);
+                response.put("username", user.getUsername());
+
+                return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.status(400).body("{\"message\": \"Failed to login account\"}");
             }

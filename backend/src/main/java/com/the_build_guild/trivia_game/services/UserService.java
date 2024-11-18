@@ -91,11 +91,15 @@ public class UserService {
     }
 
     public void updateScoreAndGamesPlayed(String userId, int scoreIncrement){
+        logger.info("Updating score and games played for user ID: {}", userId);
         User user = userRepository.findById(userId).orElse(null);
         if (user != null){
             user.setScore(user.getScore() + scoreIncrement);
             user.setGamesPlayedCount(user.getGamesPlayedCount() + 1);
             userRepository.save(user);
+            logger.info("User score and games played updated: {}", user);
+        } else {
+            logger.warn("User not found with ID: {}", userId);
         }
     }
 
@@ -112,6 +116,11 @@ public class UserService {
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    public String getUserIdByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        return user != null ? user.getId() : null;
     }
     
     }

@@ -16,11 +16,13 @@ import lombok.*;
 public class User{
 
     @Id
-    private String Id;
+    private String id;
     private String username;
     private String email;
     private String passwordHash;
     private String[] friends;
     private Integer gamesPlayedCount;
     private Integer score;
+
+    
 }
