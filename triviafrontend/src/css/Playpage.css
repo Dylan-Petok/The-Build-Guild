@@ -133,3 +133,17 @@ button.next-button {
 button.next-button:hover {
     background-color: #21a1f1;
 }
+
+.correct {
+    background-color: green;
+    width: 25%;
+}
+
+.incorrect {
+    background-color: red;
+    width: 25%;
+}
+
+.correct-answer {
+    border: 2px solid green;
+}
