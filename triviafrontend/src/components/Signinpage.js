@@ -36,6 +36,7 @@ const SigninPage = () => {
             if (response.ok) {
                 const data = await response.json(); // Parse the response JSON
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('username', data.username); // Store username
                 toast.success('Successfully logged in!');
                 login();
                 navigate('/profile');
