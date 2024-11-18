@@ -1,6 +1,7 @@
+// src/components/Playpage.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../css/Playpage.css'
+import '../css/Playpage.css';
 
 const Playpage = () => {
     const [formData, setFormData] = useState({
@@ -9,15 +10,13 @@ const Playpage = () => {
         difficulty: ''
     });
 
-    const[categories, setCategories] = useState([]);
-    const[questions, setQuestions] = useState([]);
-    const[currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const[selectedOption, setSelectedOption] = useState('');
+    const [categories, setCategories] = useState([]);
+    const [questions, setQuestions] = useState([]);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [selectedOption, setSelectedOption] = useState('');
     const [correctAnswers, setCorrectAnswers] = useState(0);
     const navigate = useNavigate();
 
-
-    
     useEffect(() => {
         // Fetch categories from the Open Trivia API when the component mounts
         fetch('https://opentdb.com/api_category.php')
@@ -25,7 +24,6 @@ const Playpage = () => {
             .then(data => setCategories(data.trivia_categories))
             .catch(error => console.error('Error fetching categories:', error));
     }, []);
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -35,24 +33,20 @@ const Playpage = () => {
         });
     };
 
-    
-
-
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Form submitted:', formData);
         // Handle form submission logic here
-             // Send form data to the backend
-            fetch('http://localhost:8080/api/trivia/play', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
+        // Send form data to the backend
+        fetch('http://localhost:8080/api/trivia/play', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
             .then(response => response.json())
             .then(data => {
-
                 console.log('Success:', data);
                 // Handle success response
                 const processedQuestions = data.results.map(result => {
@@ -60,7 +54,7 @@ const Playpage = () => {
                     return {
                         ...result,
                         question: decodeURIComponent(result.question),
-                        options: options.sort(() => Math.random() - 0.5) //shuffle options
+                        options: options.sort(() => Math.random() - 0.5) // shuffle options
                     };
                 });
                 setQuestions(processedQuestions);
@@ -70,52 +64,108 @@ const Playpage = () => {
                 // Handle error response
             });
     };
+
     const handleOptionChange = (e) => {
         setSelectedOption(e.target.value);
     };
 
     const handleNextQuestion = () => {
-            // Check if the selected option is correct
-        if (selectedOption === questions[currentQuestionIndex].correct_answer) {
-            setCorrectAnswers(correctAnswers + 1);
+        let scoreValue = 0;
+
+        if (formData.difficulty === "easy") {
+            scoreValue = 10;
+        } else if (formData.difficulty === "medium") {
+            scoreValue = 20;
+        } else {
+            scoreValue = 30;
         }
-        
-        if(currentQuestionIndex < questions.length - 1) {
+
+        // Check if the selected option is correct
+        if (selectedOption === questions[currentQuestionIndex].correct_answer) {
+            setCorrectAnswers(prevCorrectAnswers => {
+                const updatedCorrectAnswers = prevCorrectAnswers + 1;
+
+                if (currentQuestionIndex === questions.length - 1) {
+                    // Calculate gameScore after the last question
+                    const gameScore = updatedCorrectAnswers * scoreValue;
+
+                    const gameData = {
+                        userId: localStorage.getItem('username'), // Retrieve username from local storage
+                        topic: formData.category,
+                        difficulty: formData.difficulty,
+                        correctAnswers: updatedCorrectAnswers,
+                        totalQuestions: questions.length,
+                        gameScore: gameScore,
+                        datePlayed: new Date()
+                    };
+                    console.log(gameData);
+
+                    // Send game data to the backend
+                    fetch('http://localhost:8080/api/trivia/saveGame', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(gameData)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Game data saved:', data);
+                            // Handle success response
+                        })
+                        .catch(error => {
+                            console.error('Error saving game data:', error);
+                            // Handle error response
+                        });
+
+                    // Navigate to the results page
+                    navigate('/results', { state: { correctAnswers: updatedCorrectAnswers, totalQuestions: questions.length } });
+                }
+
+                return updatedCorrectAnswers;
+            });
+        } else {
+            if (currentQuestionIndex === questions.length - 1) {
+                // Calculate gameScore after the last question
+                const gameScore = correctAnswers * scoreValue;
+
+                const gameData = {
+                    userId: localStorage.getItem('username'), // Retrieve username from local storage
+                    topic: formData.category,
+                    difficulty: formData.difficulty,
+                    correctAnswers: correctAnswers,
+                    totalQuestions: questions.length,
+                    gameScore: gameScore,
+                    datePlayed: new Date()
+                };
+                console.log(gameData);
+
+                // Send game data to the backend
+                fetch('http://localhost:8080/api/trivia/saveGame', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(gameData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Game data saved:', data);
+                        // Handle success response
+                    })
+                    .catch(error => {
+                        console.error('Error saving game data:', error);
+                        // Handle error response
+                    });
+
+                // Navigate to the results page
+                navigate('/results', { state: { correctAnswers, totalQuestions: questions.length } });
+            }
+        }
+
+        if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
             setSelectedOption('');
-        } else {
-            console.log('Quiz completed');
-
-            const gameData = {
-                userIds: [/* user ID(s) */],
-                topic: formData.category,
-                difficulty: formData.difficulty,
-                correctAnswers: correctAnswers,
-                totalQuestions: questions.length,
-                datePlayed: new Date()
-            };
-            console.log(gameData);
-
-             // Send game data to the backend
-        fetch('http://localhost:8080/api/trivia/saveGame', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(gameData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Game data saved:', data);
-            // Handle success response
-        })
-        .catch(error => {
-            console.error('Error saving game data:', error);
-            // Handle error response
-        });
-
-        //Navigate to the results page
-        navigate('/results', { state: { correctAnswers, totalQuestions: questions.length } });
         }
     };
 
@@ -147,7 +197,7 @@ const Playpage = () => {
                         {categories.map(category => (
                             <option key={category.id} value={category.id}>{category.name}</option>
                         ))}
-                        </select>
+                    </select>
                 </div>
                 <div>
                     <label htmlFor="difficulty">Difficulty:</label>
@@ -167,9 +217,9 @@ const Playpage = () => {
                 <button type="submit">Submit</button>
             </form>
 
-    {questions.length > 0 && (
-        <div>
-            <h2>Question {currentQuestionIndex + 1}</h2>
+            {questions.length > 0 && (
+                <div>
+                    <h2>Question {currentQuestionIndex + 1}</h2>
                     <p>{questions[currentQuestionIndex].question}</p>
                     {questions[currentQuestionIndex].options.map((option, index) => (
                         <div key={index}>
@@ -185,8 +235,8 @@ const Playpage = () => {
                         </div>
                     ))}
                     <button onClick={handleNextQuestion}>Next</button>
-        </div>
-    )}
+                </div>
+            )}
         </div>
     );
 };

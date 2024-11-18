@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 import com.the_build_guild.trivia_game.enums.TriviaStatusCodes;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.LoggerFactory;
 
 
@@ -27,6 +28,7 @@ public class TriviaService {
 
     private final RestTemplate restTemplate;
 
+    @Autowired
     public TriviaService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
