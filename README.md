@@ -21,8 +21,10 @@
 
   ### Frontend Server
     1. Navigate to the frontend directory
-    2. Execute the command: `npm start`
-    3. Open a browser and navigate to http://localhost:3000
+    2. Execute the command: `npm install` to install the necessary dependencies
+    3. Execute the command: `npm start`
+    4. Open a browser and navigate to http://localhost:3000
 
 ## Running Tests
-If using Visual Studio Code -> Install extension "Test Runner for Java" authored by Microsoft. Once installed click on the new testing extension in the extensions bar. Execute desired tests.
+If using Visual Studio Code -> Install extension "Test Runner for Java" authored by Microsoft. Once installed click on the new testing extension in the extensions bar. Execute the backend test suite.
+To run front end tests, navigate to frontend directory and execute the command `npm run test`
