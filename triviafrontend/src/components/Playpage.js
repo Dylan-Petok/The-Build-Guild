@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../css/Playpage.css'
+import '../css/Playpage.css';
 
 const Playpage = () => {
     const [formData, setFormData] = useState({
@@ -8,20 +8,17 @@ const Playpage = () => {
         difficulty: ''
     });
 
-    const[categories, setCategories] = useState([]);
-    const[questions, setQuestions] = useState([]);
-    const[currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const[selectedOption, setSelectedOption] = useState('');
+    const [categories, setCategories] = useState([]);
+    const [questions, setQuestions] = useState([]);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [selectedOption, setSelectedOption] = useState('');
 
-    
     useEffect(() => {
-        // Fetch categories from the Open Trivia API when the component mounts
         fetch('https://opentdb.com/api_category.php')
             .then(response => response.json())
             .then(data => setCategories(data.trivia_categories))
             .catch(error => console.error('Error fetching categories:', error));
     }, []);
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -31,47 +28,35 @@ const Playpage = () => {
         });
     };
 
-    
-
-
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
-        // Handle form submission logic here
-             // Send form data to the backend
-            fetch('http://localhost:8080/api/trivia/play', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
+
+        fetch('http://localhost:8080/api/trivia/play', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        })
             .then(response => response.json())
             .then(data => {
-
-                console.log('Success:', data);
-                // Handle success response
                 const processedQuestions = data.results.map(result => {
                     const options = [...result.incorrect_answers, result.correct_answer].map(option => decodeURIComponent(option));
                     return {
                         ...result,
                         question: decodeURIComponent(result.question),
-                        options: options.sort(() => Math.random() - 0.5) //shuffle options
+                        options: options.sort(() => Math.random() - 0.5)
                     };
                 });
                 setQuestions(processedQuestions);
             })
-            .catch((error) => {
-                console.error('Error:', error);
-                // Handle error response
-            });
+            .catch(error => console.error('Error:', error));
     };
+
     const handleOptionChange = (e) => {
         setSelectedOption(e.target.value);
     };
 
     const handleNextQuestion = () => {
-        if(currentQuestionIndex < questions.length - 1) {
+        if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
             setSelectedOption('');
         } else {
@@ -80,10 +65,10 @@ const Playpage = () => {
     };
 
     return (
-        <div>
-            <h1>Quiz Settings</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
+        <div className="playpage-container">
+            <h1 className="quiz-header">Quiz Settings</h1>
+            <form onSubmit={handleSubmit} className="quiz-form">
+                <div className="form-group">
                     <label htmlFor="numberOfQuestions">Number of Questions:</label>
                     <input
                         type="number"
@@ -94,7 +79,7 @@ const Playpage = () => {
                         required
                     />
                 </div>
-                <div>
+                <div className="form-group">
                     <label htmlFor="category">Category:</label>
                     <select
                         id="category"
@@ -107,9 +92,9 @@ const Playpage = () => {
                         {categories.map(category => (
                             <option key={category.id} value={category.id}>{category.name}</option>
                         ))}
-                        </select>
+                    </select>
                 </div>
-                <div>
+                <div className="form-group">
                     <label htmlFor="difficulty">Difficulty:</label>
                     <select
                         id="difficulty"
@@ -124,12 +109,12 @@ const Playpage = () => {
                         <option value="hard">Hard</option>
                     </select>
                 </div>
-                <button type="submit">Submit</button>
+                <button type="submit" className="btn-submit">Start Quiz</button>
             </form>
 
-    {questions.length > 0 && (
-        <div>
-            <h2>Question {currentQuestionIndex + 1}</h2>
+            {questions.length > 0 && (
+                <div className="question-container">
+                    <h2>Question {currentQuestionIndex + 1}</h2>
                     <p>{questions[currentQuestionIndex].question}</p>
                     {questions[currentQuestionIndex].options.map((option, index) => (
                         <div key={index}>
@@ -144,9 +129,9 @@ const Playpage = () => {
                             <label htmlFor={`option${index}`}>{option}</label>
                         </div>
                     ))}
-                    <button onClick={handleNextQuestion}>Next</button>
-        </div>
-    )}
+                    <button onClick={handleNextQuestion} className="btn-next">Next</button>
+                </div>
+            )}
         </div>
     );
 };

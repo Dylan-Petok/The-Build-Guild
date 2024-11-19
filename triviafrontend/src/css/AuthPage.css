@@ -4,34 +4,33 @@
     align-items: center;
     justify-content: flex-start;
     text-align: center;
-    padding-top: 15vh; 
-    color: white;
+    padding: 20px;
+    margin-top: 10vh; /* To avoid navbar overlap */
 }
 
 .auth-header {
     background-color: #282c34;
     color: white;
-    padding: 20px;
-    margin-bottom: 20px;
+    padding: 40px 20px;
+    margin-bottom: 30px;
     border-radius: 10px;
-    width: 100%;
+    font-size: 2em;
 }
 
 .auth-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #282c34;
+    background-color: #f0f0f0;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    margin-top: 20px;
+    width: 100%;
+    max-width: 400px;
 }
 
 label {
     font-size: 1.1em;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
     text-align: left;
     width: 100%;
 }
@@ -43,7 +42,7 @@ input[type="password"] {
     margin-top: 5px;
     margin-bottom: 15px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     font-size: 1em;
 }
 
@@ -59,7 +58,7 @@ input[type="password"] {
 }
 
 .auth-btn:hover {
-    background-color: #21a1f1; 
+    background-color: #21a1f1;
 }
 
 .auth-footer {
