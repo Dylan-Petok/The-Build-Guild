@@ -48,6 +48,7 @@ public class TriviaService {
             case SUCCESS:
                 return response;
             case NO_RESULTS:
+                throw new IllegalArgumentException("No results found");
             case INVALID_PARAMETER:
             case TOKEN_NOT_FOUND:
             case TOKEN_EMPTY:
