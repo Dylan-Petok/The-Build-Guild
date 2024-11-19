@@ -1,4 +1,4 @@
-package com.the_build_guild.trivia_game.unit_tests;
+package com.the_build_guild.trivia_game.unit_tests.services;
 
 import com.the_build_guild.trivia_game.dtos.TriviaRequestDTO;
 import com.the_build_guild.trivia_game.dtos.TriviaResponseDTO;

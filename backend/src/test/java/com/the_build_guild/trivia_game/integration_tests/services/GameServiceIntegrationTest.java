@@ -1,4 +1,4 @@
-package com.the_build_guild.trivia_game.integration_tests;
+package com.the_build_guild.trivia_game.integration_tests.services;
 import com.the_build_guild.trivia_game.models.Game;
 import com.the_build_guild.trivia_game.repositories.GameRepository;
 import com.the_build_guild.trivia_game.services.GameService;

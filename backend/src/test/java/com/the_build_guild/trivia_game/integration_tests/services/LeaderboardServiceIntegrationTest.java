@@ -1,4 +1,4 @@
-package com.the_build_guild.trivia_game.integration_tests;
+package com.the_build_guild.trivia_game.integration_tests.services;
 
 import com.the_build_guild.trivia_game.dtos.AllTimeLeaderboardDTO;
 import com.the_build_guild.trivia_game.models.User;
