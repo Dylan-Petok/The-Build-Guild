@@ -12,9 +12,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -49,5 +51,27 @@ public class LeaderboardServiceIntegrationTest {
         assertEquals(200, leaderboard.get(0).getScore());
         assertEquals("user1", leaderboard.get(1).getUsername());
         assertEquals(100, leaderboard.get(1).getScore());
+    }
+
+        @Test
+    public void testGetAllTimeLeaderboardWithTies() {
+        User user1 = User.builder().username("user1").score(200).build();
+        User user2 = User.builder().username("user2").score(200).build();
+        when(userRepository.findAll()).thenReturn(Arrays.asList(user1, user2));
+
+        List<AllTimeLeaderboardDTO> leaderboard = leaderboardService.getAllTimeLeaderboard();
+        assertNotNull(leaderboard);
+        assertEquals(2, leaderboard.size());
+        assertEquals(200, leaderboard.get(0).getScore());
+        assertEquals(200, leaderboard.get(1).getScore());
+    }
+
+    @Test
+    public void testGetAllTimeLeaderboardWithNoUsers() {
+        when(userRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<AllTimeLeaderboardDTO> leaderboard = leaderboardService.getAllTimeLeaderboard();
+        assertNotNull(leaderboard);
+        assertEquals(0, leaderboard.size());
     }
 }

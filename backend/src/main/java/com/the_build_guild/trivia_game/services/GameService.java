@@ -14,6 +14,10 @@ public class GameService {
     private GameRepository gameRepository;
 
     public Game saveGame(Game game) {
+        if(game == null){
+            throw new NullPointerException();
+        }
+        
         return gameRepository.save(game);
     }
 
