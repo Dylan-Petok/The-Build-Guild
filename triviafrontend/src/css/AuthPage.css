@@ -4,25 +4,29 @@
     align-items: center;
     justify-content: flex-start;
     text-align: center;
-    padding-top: 15vh; 
     color: white;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 50px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      
+      
 }
 
 .auth-header {
-    background-color: #282c34;
+    background-color: #282c34;  
     color: white;
     padding: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 2px;  
     border-radius: 10px;
-    width: 100%;
+    font-size: 2em;  
 }
 
 .auth-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #282c34;
-    padding: 20px;
+    background-color: #f0f0f0;
+    padding: 25px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 300px;
@@ -50,12 +54,15 @@ input[type="password"] {
 .auth-btn {
     padding: 10px 20px;
     font-size: 1.2em;
-    background-color: #61dafb;
+    background-color:   #61dafb;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
     width: 100%;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .auth-btn:hover {
@@ -76,3 +83,10 @@ input[type="password"] {
 .auth-footer a:hover {
     color: #21a1f1;
 }
+body {
+    background: linear-gradient(135deg, #00b3b3, #009999);
+     font-family: 'Poppins', sans-serif;
+      
+      
+  }
+  

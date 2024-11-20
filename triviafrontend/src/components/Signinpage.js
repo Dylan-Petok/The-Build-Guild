@@ -1,4 +1,3 @@
-// SigninPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
@@ -46,6 +45,7 @@ const SigninPage = () => {
 
     return (
         <div className="auth-container">
+            <h1 className="auth-header">Sign In</h1>  {/* Header above the form */}
             <form className="auth-form" onSubmit={handleSubmit}>
                 <label>Username:</label>
                 <input
@@ -72,4 +72,5 @@ const SigninPage = () => {
     );
 };
 
-export default SigninPage;
+export default SignInPage;
+
