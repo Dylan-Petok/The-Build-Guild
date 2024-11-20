@@ -72,5 +72,5 @@ const SigninPage = () => {
     );
 };
 
-export default SignInPage;
+export default SigninPage;
 
