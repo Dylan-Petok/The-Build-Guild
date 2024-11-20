@@ -53,7 +53,7 @@ const SignUpPage = () => {
 
     return (
         <div className="auth-container">
-            <h1>Sign Up</h1>
+            <h1 className="auth-header">Sign Up</h1>  {/* Header above the form */}
             <form className="auth-form" onSubmit={handleSubmit}>
                 <label>Username:</label>
                 <input
