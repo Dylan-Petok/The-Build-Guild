@@ -4,7 +4,7 @@
     align-items: center;
     text-align: center;
     padding: 20px;
-    margin-top: 10vh; /* To avoid navbar overlap */
+    margin-top: 10vh; 
 }
 
 .playpage-header {
@@ -57,7 +57,8 @@ select {
 }
 
 .btn-submit:hover {
-    background-color: #21a1f1; /* Matches your hover style */
+    background-color: #21a1f1; 
+    background-color: #21a1f1; 
 }
 
 .question-container {

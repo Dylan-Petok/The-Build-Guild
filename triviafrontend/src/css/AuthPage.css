@@ -4,8 +4,8 @@
     align-items: center;
     justify-content: flex-start;
     text-align: center;
-    padding: 20px;
-    margin-top: 10vh; /* To avoid navbar overlap */
+    padding-top: 15vh; 
+    color: white;
 }
 
 .auth-header {
