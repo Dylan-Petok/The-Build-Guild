@@ -17,25 +17,32 @@
 
 .auth-header {
     background-color: #282c34;  
+    background-color: #282c34;  
     color: white;
     padding: 20px;
     margin-bottom: 2px;  
+    margin-bottom: 2px;  
     border-radius: 10px;
+    font-size: 2em;  
     font-size: 2em;  
 }
 
 .auth-form {
     background-color: #f0f0f0;
     padding: 25px;
+    background-color: #f0f0f0;
+    padding: 25px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    margin-top: 20px;
+    width: 100%;
+    max-width: 400px;
 }
 
 label {
     font-size: 1.1em;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
     text-align: left;
     width: 100%;
 }
@@ -47,13 +54,14 @@ input[type="password"] {
     margin-top: 5px;
     margin-bottom: 15px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     font-size: 1em;
 }
 
 .auth-btn {
     padding: 10px 20px;
     font-size: 1.2em;
+    background-color:   #61dafb;
     background-color:   #61dafb;
     border: none;
     border-radius: 5px;
@@ -63,10 +71,15 @@ input[type="password"] {
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .auth-btn:hover {
-    background-color: #21a1f1; 
+    background-color: #21a1f1;
+    transform: scale(1.05); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .auth-footer {

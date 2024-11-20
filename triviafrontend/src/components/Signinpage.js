@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import '../css/AuthPage.css';
 
-const SigninPage = () => {
+const SignInPage = () => {
     const [formData, setFormData] = useState({
         username: '',
         password: ''
@@ -22,7 +22,7 @@ const SigninPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Signin request sent with data:', formData);
+        console.log('Sign-in request sent with data:', formData);
         try {
             const response = await fetch('http://localhost:8080/api/users/login', {
                 method: 'POST',
@@ -32,11 +32,11 @@ const SigninPage = () => {
                 body: JSON.stringify(formData)
             });
             if (response.ok) {
-                console.log('Signin successful');
+                console.log('Sign-in successful');
                 login();
                 navigate('/');
             } else {
-                console.error('Signin failed');
+                console.error('Sign-in failed');
             }
         } catch (error) {
             console.error('Error:', error);
@@ -45,6 +45,7 @@ const SigninPage = () => {
 
     return (
         <div className="auth-container">
+            <h1 className="auth-header">Sign In</h1>  {/* Header above the form */}
             <h1 className="auth-header">Sign In</h1>  {/* Header above the form */}
             <form className="auth-form" onSubmit={handleSubmit}>
                 <label>Username:</label>
@@ -71,6 +72,8 @@ const SigninPage = () => {
         </div>
     );
 };
+
+export default SignInPage;
 
 export default SigninPage;
 
