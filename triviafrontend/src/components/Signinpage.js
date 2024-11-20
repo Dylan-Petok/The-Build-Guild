@@ -46,7 +46,6 @@ const SignInPage = () => {
     return (
         <div className="auth-container">
             <h1 className="auth-header">Sign In</h1>  {/* Header above the form */}
-            <h1 className="auth-header">Sign In</h1>  {/* Header above the form */}
             <form className="auth-form" onSubmit={handleSubmit}>
                 <label>Username:</label>
                 <input
@@ -74,6 +73,4 @@ const SignInPage = () => {
 };
 
 export default SignInPage;
-
-export default SigninPage;
 
