@@ -1,31 +1,24 @@
-/* Center the entire Play Page */
+
 .playpage-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Align content closer to the top */
-    min-height: 90vh; /* Reduce height to bring content closer to the header */
+    justify-content: flex-start;
+    min-height: 90vh; 
     text-align: center;
-    background: linear-gradient(135deg, #add8e6, #8a2be2);
     padding: 20px;
-    gap: 30px; /* Slightly reduce the gap between containers */
+    gap: 30px; 
 }
 
-/* Style the Quiz Settings heading */
 h1 {
     font-size: 2.5em;
     color: #ffffff;
-    background-color: rgb(75, 75, 75);
-    padding: 15px;
-    border-radius: 8px;
     margin: 0 auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: fit-content;
 }
 
-/* Center the Quiz Settings form */
 form {
-    background-color: #6c00b0;
+    background-color: #463e56;
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
@@ -38,7 +31,7 @@ form {
     margin: 0 auto;
 }
 
-/* Form elements styling */
+
 label {
     display: block;
     font-size: 1.1em;
@@ -50,7 +43,7 @@ select {
     width: 100%;
     padding: 12px;
     font-size: 1.1em;
-    border: 2px solid #8a2be2;
+    border: 2px solid #f4f4f5;
     border-radius: 5px;
     background-color: #f8f8ff;
     color: #333;
@@ -71,9 +64,9 @@ button[type="submit"]:hover {
     background-color: #21a1f1;
 }
 
-/* Style for the question container */
+
 .play-question-container {
-    background-color: #6c00b0;
+    background-color: #faf8fb;
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
@@ -82,25 +75,24 @@ button[type="submit"]:hover {
     margin: 0 auto;
 }
 
-/* Question text styling */
+
 .question-text {
     font-size: 1.8em;
     color: #ffffff;
     margin-bottom: 20px;
 }
 
-/* Style for options container */
 .play-options {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Align options to the left */
+    align-items: flex-start; 
     gap: 15px;
-    margin-top: 20px; /* Add some spacing above the options */
+    margin-top: 20px; 
 }
 
-/* Style for individual options */
+
 .play-option {
-    background-color: #8A2BE2;
+    background-color: #f0eef2;
     padding: 10px;
     border-radius: 8px;
     color: white;
@@ -111,7 +103,7 @@ button[type="submit"]:hover {
 }
 
 .play-option:hover {
-    background-color: #6c00b0;
+    background-color: #f4f4f4;
 }
 
 input[type="radio"] {

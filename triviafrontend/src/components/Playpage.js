@@ -1,4 +1,3 @@
-// src/components/Playpage.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/Playpage.css';
@@ -17,7 +16,7 @@ const Playpage = () => {
     const [correctAnswers, setCorrectAnswers] = useState(0);
     const [feedback, setFeedback] = useState('');
     const [isCorrect, setIsCorrect] = useState(null);
-    const [correctAnswer, setCorrectAnswer] = useState(''); // Add state to track the correct answer
+    const [correctAnswer, setCorrectAnswer] = useState(''); 
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,8 +38,7 @@ const Playpage = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Form submitted:', formData);
-        // Handle form submission logic here
-        // Send form data to the backend
+       
         fetch('http://localhost:8080/api/trivia/play', {
             method: 'POST',
             headers: {
@@ -51,20 +49,20 @@ const Playpage = () => {
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
-                // Handle success response
+              
                 const processedQuestions = data.results.map(result => {
                     const options = [...result.incorrect_answers, result.correct_answer].map(option => decodeURIComponent(option));
                     return {
                         ...result,
                         question: decodeURIComponent(result.question),
-                        options: options.sort(() => Math.random() - 0.5) // shuffle options
+                        options: options.sort(() => Math.random() - 0.5) 
                     };
                 });
                 setQuestions(processedQuestions);
             })
             .catch((error) => {
                 console.error('Error:', error);
-                // Handle error response
+             
             });
     };
 
@@ -83,18 +81,18 @@ const Playpage = () => {
             scoreValue = 30;
         }
 
-        // Check if the selected option is correct
+     
         const correctAnswer = questions[currentQuestionIndex].correct_answer;
-        setCorrectAnswer(correctAnswer); // Update correct answer state
+        setCorrectAnswer(correctAnswer); 
 
-        // Check if the selected option is correct
+       
         if (selectedOption === questions[currentQuestionIndex].correct_answer) {
             setCorrectAnswers(prevCorrectAnswers => prevCorrectAnswers + 1);
-            setFeedback('Correct!'); // Update feedback state
-            setIsCorrect(true); // Set isCorrect to true
+            setFeedback('Correct!'); 
+            setIsCorrect(true); 
         } else {
-            setFeedback('Incorrect!'); // Update feedback state
-            setIsCorrect(false); // Set isCorrect to false
+            setFeedback('Incorrect!'); 
+            setIsCorrect(false); 
         }
         setTimeout(() => {
             if (currentQuestionIndex < questions.length - 1) {

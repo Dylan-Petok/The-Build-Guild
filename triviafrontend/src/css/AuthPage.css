@@ -4,47 +4,51 @@
     align-items: center;
     justify-content: flex-start;
     text-align: center;
-    padding-top: 15vh; 
-    color: white;
+    color: rgb(10, 10, 10);
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 50px;
+    background: #463e56;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);   
 }
 
 .auth-header {
-    background-color: #282c34;
-    color: white;
+    color: rgb(8, 8, 8); 
     padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    width: 100%;
+    margin-bottom: 10px; 
+    font-size: 2em; 
+    text-align: center;
 }
 
 .auth-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #282c34;
-    padding: 20px;
+    background-color: #6d5c7a;
+    padding: 25px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    margin-top: 20px;
+    width: 100%;
+    max-width: 300px;
+    margin-top: 30px; 
 }
 
 label {
     font-size: 1.1em;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
     text-align: left;
     width: 100%;
 }
 
 input[type="text"],
-input[type="email"],
-input[type="password"] {
+input[type="password"],
+input[type="email"] {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
     margin-bottom: 15px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     font-size: 1em;
 }
 
@@ -57,10 +61,13 @@ input[type="password"] {
     cursor: pointer;
     transition: background-color 0.3s;
     width: 100%;
+    color: rgb(10, 10, 10);
 }
 
 .auth-btn:hover {
-    background-color: #21a1f1; 
+    background-color: #21a1f1;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .auth-footer {
@@ -76,4 +83,9 @@ input[type="password"] {
 
 .auth-footer a:hover {
     color: #21a1f1;
+}
+
+body {
+    background: linear-gradient(135deg, #0c5b8d, #7d0d99);
+    color: white;
 }
