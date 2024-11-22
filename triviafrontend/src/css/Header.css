@@ -49,4 +49,18 @@
   .navbar-link.logout:hover{
     cursor: pointer;
   }
+  .active{
+    color: #ffffff;
+    background: linear-gradient(135deg, #add8e6, #8a2be2); /* Light blue to purple gradient */
+    padding: 10px 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}    
+
+.active:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+}
+  
   

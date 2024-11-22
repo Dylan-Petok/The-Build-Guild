@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import '../css/Header.css';
 
@@ -36,20 +36,20 @@ function Header() {
             <nav className="navbar">
                 <ul className="navbar-list">
                     <li className="navbar-item">
-                        <a href="/" className="navbar-link">Home</a>
+                        <NavLink to="/" className="navbar-link" activeClassName="active">Home</NavLink>
                     </li>
                     <li className="navbar-item">
-                        <a href="/play" className="navbar-link">Play</a>
+                        <NavLink to="/play" className="navbar-link" activeClassName="active">Play</NavLink>
                     </li>
                     <li className="navbar-item">
-                        <a href="/leaderboard" className="navbar-link">Leaderboard</a>
+                        <NavLink to="/leaderboard" className="navbar-link" activeClassName="active">Leaderboard</NavLink>
                     </li>
                     
                     <div className="auth-item">
                     {isAuthenticated ? (
                         <>
                             <li className="navbar-item">
-                                <a href="/profile" className="navbar-link">Profile</a>
+                                <NavLink to="/profile" className="navbar-link" activeClassName="active">Profile</NavLink>
                             </li>
                             
                             <li className="navbar-item">
@@ -59,10 +59,10 @@ function Header() {
                         ) : (
                             <>
                                 <li className="navbar-item">
-                                    <a href="/signin" className="navbar-link">Sign-In</a>
+                                    <NavLink to="/signin" className="navbar-link" activeClassName="active">Sign-In</NavLink>
                                 </li>
                                 <li className="navbar-item">
-                                    <a href="/signup" className="navbar-link">Sign-Up</a>
+                                    <NavLink to="/signup" className="navbar-link" activeClassName="active">Sign-Up</NavLink>
                                 </li>
                             </>
                         )}
