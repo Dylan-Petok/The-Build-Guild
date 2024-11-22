@@ -42,4 +42,11 @@
     display: flex;
     gap: 15px;
   }
+  .navbar-link.logout{
+    background-color: transparent;
+    border: none;
+  }
+  .navbar-link.logout:hover{
+    cursor: pointer;
+  }
   
