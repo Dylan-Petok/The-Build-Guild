@@ -33,6 +33,7 @@ const SignInPage = () => {
                 body: JSON.stringify(formData)
             });
             if (response.ok) {
+                toast.success('Log-in successful!')
                 console.log('Sign-in successful');
                 login();
                 navigate('/');
