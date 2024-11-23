@@ -63,34 +63,38 @@ const SignUpPage = () => {
         <div className="auth-container">
             <h1 className="auth-header">Sign Up</h1> 
             <form className="auth-form" onSubmit={handleSubmit}>
-                <label>Username:</label>
+                <label for="username">Username:</label>
                 <input
                     type="text"
                     name="username"
+                    id="username"
                     value={formData.username}
                     onChange={handleChange}
                     required
                 />
-                <label>Email:</label>
+                <label for="email">Email:</label>
                 <input
                     type="email"
                     name="email"
+                    id="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
                 />
-                <label>Password:</label>
+                <label for="password">Password:</label>
                 <input
                     type="password"
                     name="password"
+                    id="password"
                     value={formData.password}
                     onChange={handleChange}
                     required
                 />
-                <label>Confirm Password:</label>
+                <label for="confirmPassword">Confirm Password:</label>
                 <input
                     type="password"
                     name="confirmPassword"
+                    id="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
