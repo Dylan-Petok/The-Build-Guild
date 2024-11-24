@@ -15,6 +15,7 @@ import PersonalLeaderboard from './components/leaderboard/personal';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './AuthContext';
+import PrivateRoute from './components/PrivateRoute';
 import './App.css';
 
 function App() {
@@ -28,17 +29,17 @@ function App() {
                 <Route path="/" element={<Homepage />} />
                 <Route path="/signin" element={<Signinpage />} />
                 <Route path="/signup" element={<Signuppage />} />
-                <Route path="/leaderboard" element={<Leaderboardpage />} />
-                <Route path="/play" element={<Playpage />} />
+                <Route path="/leaderboard" element={<PrivateRoute><Leaderboardpage /></PrivateRoute>} />
+                <Route path="/play" element={<PrivateRoute><Playpage /></PrivateRoute>} />
                 <Route path="/results" element={<TriviaResults />} />
-                <Route path="/leaderboard/friends" element={<FriendsLeaderboard />} />
-                <Route path="/leaderboard/alltime" element={<AllTimeLeaderboard />} /> 
+                <Route path="/leaderboard/friends" element={<FriendsLeaderboard/>} />
+                <Route path="/leaderboard/alltime" element={<AllTimeLeaderboard />}/>
                 <Route path="/leaderboard/personal" element={<PersonalLeaderboard />} /> 
-                <Route path="/profile" element={<ProfilePage />} /> 
+                <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} /> 
               </Routes>
             </main>
             <Footer />
-            <ToastContainer /> 
+            <ToastContainer autoClose={2000} /> 
           </div>
         </Router>
       </AuthProvider>

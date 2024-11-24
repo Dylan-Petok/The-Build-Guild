@@ -1,4 +1,4 @@
-package com.the_build_guild.trivia_game.integration_tests;
+package com.the_build_guild.trivia_game.integration_tests.services;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;

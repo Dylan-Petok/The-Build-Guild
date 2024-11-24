@@ -1,11 +1,10 @@
-// SigninPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { toast } from 'react-toastify';
 import '../css/AuthPage.css';
 
-const SigninPage = () => {
+const SignInPage = () => {
     const [formData, setFormData] = useState({
         username: '',
         password: ''
@@ -24,7 +23,7 @@ const SigninPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Signin request sent with data:', formData);
+        console.log('Sign-in request sent with data:', formData);
         try {
             const response = await fetch('http://localhost:8080/api/users/login', {
                 method: 'POST',
@@ -34,29 +33,24 @@ const SigninPage = () => {
                 body: JSON.stringify(formData)
             });
             if (response.ok) {
-                const data = await response.json(); // Parse the response JSON
+                const data = await response.json()
                 localStorage.setItem('token', data.token);
-                localStorage.setItem('username', data.username); // Store username
-                toast.success('Successfully logged in!');
+                localStorage.setItem('username', data.username);
+                toast.success('Log-in successful!')
+                console.log('Sign-in successful');
                 login();
-                navigate('/profile');
+                navigate('/');
             } else {
-                const errorText = await response.text();
-                try {
-                    const errorData = JSON.parse(errorText); // Try to parse as JSON
-                    toast.error(`Signin failed: ${errorData.message}`);
-                } catch (e) {
-                    toast.error(`Signin failed: ${errorText}`); // Fallback to text
-                }
+                console.error('Sign-in failed');
             }
         } catch (error) {
             console.error('Error:', error);
-            toast.error('An error occurred. Please try again.');
         }
     };
 
     return (
         <div className="auth-container">
+            <h1 className="auth-header">Sign In</h1>  
             <form className="auth-form" onSubmit={handleSubmit}>
                 <label>Username:</label>
                 <input
@@ -83,4 +77,4 @@ const SigninPage = () => {
     );
 };
 
-export default SigninPage;
+export default SignInPage;

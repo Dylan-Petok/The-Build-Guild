@@ -1,8 +1,7 @@
-// SignUpPage.js
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthContext';
-import { toast } from 'react-toastify';
+import React, { useState } from 'react';  
+import { useNavigate } from 'react-router-dom';  
+import { useAuth } from '../AuthContext';  
+import { toast } from 'react-toastify';  
 import '../css/AuthPage.css';
 
 const SignUpPage = () => {
@@ -13,8 +12,8 @@ const SignUpPage = () => {
         confirmPassword: ''
     });
 
-    const navigate = useNavigate();
-    const { login } = useAuth();
+    const navigate = useNavigate();  
+    const { login } = useAuth(); 
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -30,7 +29,6 @@ const SignUpPage = () => {
             alert('Passwords do not match.');
             return;
         }
-           // Create an object excluding confirmPassword to log what data was sent over
         const dataToSend = {
             username: formData.username,
             email: formData.email,
@@ -43,22 +41,18 @@ const SignUpPage = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    username: formData.username,
-                    email: formData.email,
-                    password: formData.password
-                })
+                body: JSON.stringify(dataToSend)
             });
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('username', data.username);
-                toast.success('Account successfully created!');
+                toast.success('Account successfully created!');  // Show success message
                 login();
                 navigate('/');
             } else {
-                const errorData = await response.json()
-                toast.error(`Sign up failed: ${errorData.message}`);
+                const errorData = await response.json();
+                toast.error(`Sign up failed: ${errorData.message}`);  // Show error message
             }
         } catch (error) {
             console.error('Error:', error);
@@ -67,36 +61,40 @@ const SignUpPage = () => {
 
     return (
         <div className="auth-container">
-            <h1>Sign Up</h1>
+            <h1 className="auth-header">Sign Up</h1> 
             <form className="auth-form" onSubmit={handleSubmit}>
-                <label>Username:</label>
+                <label for="username">Username:</label>
                 <input
                     type="text"
                     name="username"
+                    id="username"
                     value={formData.username}
                     onChange={handleChange}
                     required
                 />
-                <label>Email:</label>
+                <label for="email">Email:</label>
                 <input
                     type="email"
                     name="email"
+                    id="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
                 />
-                <label>Password:</label>
+                <label for="password">Password:</label>
                 <input
                     type="password"
                     name="password"
+                    id="password"
                     value={formData.password}
                     onChange={handleChange}
                     required
                 />
-                <label>Confirm Password:</label>
+                <label for="confirmPassword">Confirm Password:</label>
                 <input
                     type="password"
                     name="confirmPassword"
+                    id="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required

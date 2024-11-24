@@ -1,4 +1,3 @@
-// src/components/Playpage.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/Playpage.css';
@@ -15,6 +14,10 @@ const Playpage = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedOption, setSelectedOption] = useState('');
     const [correctAnswers, setCorrectAnswers] = useState(0);
+    const [feedback, setFeedback] = useState('');
+    const [isCorrect, setIsCorrect] = useState(null);
+    const [correctAnswer, setCorrectAnswer] = useState(''); 
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -35,9 +38,10 @@ const Playpage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const username = localStorage.getItem('username');
+        console.log('Username:', username);
         console.log('Form submitted:', formData);
-        // Handle form submission logic here
-        // Send form data to the backend
+       
         fetch('http://localhost:8080/api/trivia/play', {
             method: 'POST',
             headers: {
@@ -48,20 +52,20 @@ const Playpage = () => {
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
-                // Handle success response
+              
                 const processedQuestions = data.results.map(result => {
                     const options = [...result.incorrect_answers, result.correct_answer].map(option => decodeURIComponent(option));
                     return {
                         ...result,
                         question: decodeURIComponent(result.question),
-                        options: options.sort(() => Math.random() - 0.5) // shuffle options
+                        options: options.sort(() => Math.random() - 0.5) 
                     };
                 });
                 setQuestions(processedQuestions);
             })
             .catch((error) => {
                 console.error('Error:', error);
-                // Handle error response
+             
             });
     };
 
@@ -79,61 +83,39 @@ const Playpage = () => {
         } else {
             scoreValue = 30;
         }
-
-        // Check if the selected option is correct
-        if (selectedOption === questions[currentQuestionIndex].correct_answer) {
-            setCorrectAnswers(prevCorrectAnswers => {
-                const updatedCorrectAnswers = prevCorrectAnswers + 1;
-
-                if (currentQuestionIndex === questions.length - 1) {
-                    // Calculate gameScore after the last question
-                    const gameScore = updatedCorrectAnswers * scoreValue;
-
-                    const gameData = {
-                        userId: localStorage.getItem('username'), // Retrieve username from local storage
-                        topic: formData.category,
-                        difficulty: formData.difficulty,
-                        correctAnswers: updatedCorrectAnswers,
-                        totalQuestions: questions.length,
-                        gameScore: gameScore,
-                        datePlayed: new Date()
-                    };
-                    console.log(gameData);
-
-                    // Send game data to the backend
-                    fetch('http://localhost:8080/api/trivia/saveGame', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(gameData)
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log('Game data saved:', data);
-                            // Handle success response
-                        })
-                        .catch(error => {
-                            console.error('Error saving game data:', error);
-                            // Handle error response
-                        });
-
-                    // Navigate to the results page
-                    navigate('/results', { state: { correctAnswers: updatedCorrectAnswers, totalQuestions: questions.length } });
-                }
-
-                return updatedCorrectAnswers;
-            });
+    
+        const correctAnswer = decodeURIComponent(questions[currentQuestionIndex].correct_answer);
+        setCorrectAnswer(correctAnswer); 
+    
+        let isAnswerCorrect = decodeURIComponent(selectedOption) === correctAnswer;
+        if (isAnswerCorrect) {
+            setCorrectAnswers(prevCorrectAnswers => prevCorrectAnswers + 1);
+            setFeedback('Correct!'); 
+            setIsCorrect(true); 
         } else {
-            if (currentQuestionIndex === questions.length - 1) {
-                // Calculate gameScore after the last question
-                const gameScore = correctAnswers * scoreValue;
+            setFeedback('Incorrect!'); 
+            setIsCorrect(false); 
+        }
+        setIsSubmitDisabled(true);
+    
+        setTimeout(() => {
+            if (currentQuestionIndex < questions.length - 1) {
+                setCurrentQuestionIndex(currentQuestionIndex + 1);
+                setSelectedOption('');
+                setFeedback(''); // Clear feedback
+                setIsCorrect(null); // Reset isCorrect
+                setCorrectAnswer(''); // Clear correct answer
+                setIsSubmitDisabled(false);
+            } else {
+                console.log('Quiz completed');
 
+                const finalCorrectAnswers = isAnswerCorrect ? correctAnswers + 1 : correctAnswers;
+                const gameScore = finalCorrectAnswers * scoreValue;
                 const gameData = {
                     userId: localStorage.getItem('username'), // Retrieve username from local storage
                     topic: formData.category,
                     difficulty: formData.difficulty,
-                    correctAnswers: correctAnswers,
+                    correctAnswers: finalCorrectAnswers,
                     totalQuestions: questions.length,
                     gameScore: gameScore,
                     datePlayed: new Date()
@@ -148,26 +130,22 @@ const Playpage = () => {
                     },
                     body: JSON.stringify(gameData)
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Game data saved:', data);
-                        // Handle success response
-                    })
-                    .catch(error => {
-                        console.error('Error saving game data:', error);
-                        // Handle error response
-                    });
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Game data saved:', data);
+                    // Handle success response
+                })
+                .catch(error => {
+                    console.error('Error saving game data:', error);
+                    // Handle error response
+                });
 
-                // Navigate to the results page
-                navigate('/results', { state: { correctAnswers, totalQuestions: questions.length } });
-            }
+            // Navigate to the results page
+            navigate('/results', { state: { finalCorrectAnswers, totalQuestions: questions.length } });
         }
-
-        if (currentQuestionIndex < questions.length - 1) {
-            setCurrentQuestionIndex(currentQuestionIndex + 1);
-            setSelectedOption('');
-        }
-    };
+    }, 3000); // Delay for 2 seconds
+};
+   
 
     return (
         <div>
@@ -221,6 +199,9 @@ const Playpage = () => {
                 <div>
                     <h2>Question {currentQuestionIndex + 1}</h2>
                     <p>{questions[currentQuestionIndex].question}</p>
+                    {feedback && (
+                        <p className={isCorrect ? 'correct' : 'incorrect'}>{feedback}</p> // Display feedback message
+                    )}
                     {questions[currentQuestionIndex].options.map((option, index) => (
                         <div key={index}>
                             <input
@@ -231,10 +212,10 @@ const Playpage = () => {
                                 checked={selectedOption === option}
                                 onChange={handleOptionChange}
                             />
-                            <label htmlFor={`option${index}`}>{option}</label>
+                            <label htmlFor={`option${index}`} className={isCorrect === false && option === correctAnswer ? 'correct-answer' : ''}>{option}</label>
                         </div>
                     ))}
-                    <button onClick={handleNextQuestion}>Next</button>
+                    <button onClick={handleNextQuestion} disabled={isSubmitDisabled}>Next</button>
                 </div>
             )}
         </div>
