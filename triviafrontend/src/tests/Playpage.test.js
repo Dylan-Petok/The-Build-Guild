@@ -233,7 +233,7 @@ describe('Playpage Component', () => {
     });
 
     expect(mockNavigate).toHaveBeenCalledWith('/results', {
-      state: { correctAnswers: 1, totalQuestions: 1 },
+      state: { finalCorrectAnswers: 1, totalQuestions: 1 },
     });
 
     jest.useRealTimers();
@@ -342,7 +342,7 @@ describe('Playpage Component', () => {
     });
 
     expect(mockNavigate).toHaveBeenCalledWith('/results', {
-      state: { correctAnswers: 0, totalQuestions: 1 },
+      state: { finalCorrectAnswers: 0, totalQuestions: 1 },
     });
 
     jest.useRealTimers();

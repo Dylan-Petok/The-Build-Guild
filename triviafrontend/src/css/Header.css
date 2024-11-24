@@ -42,6 +42,10 @@
     display: flex;
     gap: 15px;
   }
+
+  .navbar-link{
+    font-size: 16px;
+  }
   .navbar-link.logout{
     background-color: transparent;
     border: none;
@@ -62,5 +66,6 @@
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   color: #ffffff;
 }
+
   
   

@@ -33,6 +33,9 @@ const SignInPage = () => {
                 body: JSON.stringify(formData)
             });
             if (response.ok) {
+                const data = await response.json()
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('username', data.username);
                 toast.success('Log-in successful!')
                 console.log('Sign-in successful');
                 login();

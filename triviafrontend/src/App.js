@@ -33,13 +33,13 @@ function App() {
                 <Route path="/play" element={<PrivateRoute><Playpage /></PrivateRoute>} />
                 <Route path="/results" element={<TriviaResults />} />
                 <Route path="/leaderboard/friends" element={<FriendsLeaderboard/>} />
-                <Route path="/leaderboard/personal" element={<AllTimeLeaderboard />}/>
+                <Route path="/leaderboard/alltime" element={<AllTimeLeaderboard />}/>
                 <Route path="/leaderboard/personal" element={<PersonalLeaderboard />} /> 
                 <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} /> 
               </Routes>
             </main>
             <Footer />
-            <ToastContainer /> 
+            <ToastContainer autoClose={2000} /> 
           </div>
         </Router>
       </AuthProvider>

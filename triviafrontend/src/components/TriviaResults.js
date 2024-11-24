@@ -6,8 +6,8 @@ import '../css/TriviaResults.css';
 const ResultsPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { correctAnswers, totalQuestions } = location.state || { correctAnswers: 0, totalQuestions: 0 };
-    const percentage = (correctAnswers / totalQuestions) * 100;
+    const { finalCorrectAnswers, totalQuestions } = location.state || { finalCorrectAnswers: 0, totalQuestions: 0 };
+    const percentage = (finalCorrectAnswers / totalQuestions) * 100;
 
     const handlePlayAgain = () => {
         navigate('/play');
@@ -16,7 +16,7 @@ const ResultsPage = () => {
     return (
         <div className="results-container">
             <h1>Quiz Results</h1>
-            <p>You got {correctAnswers} out of {totalQuestions} questions right.</p>
+            <p>You got {finalCorrectAnswers} out of {totalQuestions} questions right.</p>
             <p>Your score: {percentage.toFixed(2)}%</p>
             <button onClick={handlePlayAgain} className="play-again-btn">Play Again</button>
         </div>

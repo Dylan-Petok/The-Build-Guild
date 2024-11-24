@@ -17,6 +17,7 @@ const Playpage = () => {
     const [feedback, setFeedback] = useState('');
     const [isCorrect, setIsCorrect] = useState(null);
     const [correctAnswer, setCorrectAnswer] = useState(''); 
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -37,6 +38,8 @@ const Playpage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        const username = localStorage.getItem('username');
+        console.log('Username:', username);
         console.log('Form submitted:', formData);
        
         fetch('http://localhost:8080/api/trivia/play', {
@@ -80,13 +83,12 @@ const Playpage = () => {
         } else {
             scoreValue = 30;
         }
-
-     
-        const correctAnswer = questions[currentQuestionIndex].correct_answer;
+    
+        const correctAnswer = decodeURIComponent(questions[currentQuestionIndex].correct_answer);
         setCorrectAnswer(correctAnswer); 
-
-       
-        if (selectedOption === questions[currentQuestionIndex].correct_answer) {
+    
+        let isAnswerCorrect = decodeURIComponent(selectedOption) === correctAnswer;
+        if (isAnswerCorrect) {
             setCorrectAnswers(prevCorrectAnswers => prevCorrectAnswers + 1);
             setFeedback('Correct!'); 
             setIsCorrect(true); 
@@ -94,6 +96,8 @@ const Playpage = () => {
             setFeedback('Incorrect!'); 
             setIsCorrect(false); 
         }
+        setIsSubmitDisabled(true);
+    
         setTimeout(() => {
             if (currentQuestionIndex < questions.length - 1) {
                 setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -101,15 +105,17 @@ const Playpage = () => {
                 setFeedback(''); // Clear feedback
                 setIsCorrect(null); // Reset isCorrect
                 setCorrectAnswer(''); // Clear correct answer
+                setIsSubmitDisabled(false);
             } else {
                 console.log('Quiz completed');
 
-                const gameScore = correctAnswers * scoreValue;
+                const finalCorrectAnswers = isAnswerCorrect ? correctAnswers + 1 : correctAnswers;
+                const gameScore = finalCorrectAnswers * scoreValue;
                 const gameData = {
                     userId: localStorage.getItem('username'), // Retrieve username from local storage
                     topic: formData.category,
                     difficulty: formData.difficulty,
-                    correctAnswers: correctAnswers,
+                    correctAnswers: finalCorrectAnswers,
                     totalQuestions: questions.length,
                     gameScore: gameScore,
                     datePlayed: new Date()
@@ -135,7 +141,7 @@ const Playpage = () => {
                 });
 
             // Navigate to the results page
-            navigate('/results', { state: { correctAnswers, totalQuestions: questions.length } });
+            navigate('/results', { state: { finalCorrectAnswers, totalQuestions: questions.length } });
         }
     }, 3000); // Delay for 2 seconds
 };
@@ -209,7 +215,7 @@ const Playpage = () => {
                             <label htmlFor={`option${index}`} className={isCorrect === false && option === correctAnswer ? 'correct-answer' : ''}>{option}</label>
                         </div>
                     ))}
-                    <button onClick={handleNextQuestion}>Next</button>
+                    <button onClick={handleNextQuestion} disabled={isSubmitDisabled}>Next</button>
                 </div>
             )}
         </div>
