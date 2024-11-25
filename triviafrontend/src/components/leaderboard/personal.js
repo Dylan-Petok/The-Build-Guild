@@ -3,6 +3,7 @@ import '../../css/Leaderboard.css';
 
 const PersonalLeaderboard = ({ username }) => {
     const [leaderboard, setLeaderboard] = useState([]);
+<<<<<<< Updated upstream
     const [error, setError] = useState(false);
 
     useEffect(() => {

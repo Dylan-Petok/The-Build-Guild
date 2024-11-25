@@ -33,6 +33,7 @@ public class SecurityConfig {
             .requestMatchers("/api/trivia/saveGame").permitAll()
             .requestMatchers("/api/leaderboard/allTime").permitAll()
             .requestMatchers("/api/users/profile").permitAll()
+            .requestMatchers("/api/users/leaderboard/personal").permitAll()
             .requestMatchers("/logout").permitAll()
                 .anyRequest().permitAll()
             )
