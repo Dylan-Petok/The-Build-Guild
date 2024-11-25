@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.apache.catalina.connector.Response;
 import org.slf4j.LoggerFactory;
@@ -48,9 +49,8 @@ public class UserController {
         try{
             User user = userService.createUser(userCreationDTO);
             if (user != null) {
-                String token = userService.generateToken(user);
                 setAuthentication(user);
-                return ResponseEntity.ok("{\"token\": \"" + token + "\"}");
+                return ResponseEntity.ok("{\"message\": \"Account created successfully\"}");
             } else {
                 return ResponseEntity.status(400).body("{\"message\": \"Failed to login account\"}");
             }
@@ -58,26 +58,32 @@ public class UserController {
             return ResponseEntity.status(500).body("{\"message\": \"An error occurred while logging in account\"}");
         }
     }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO) {
         logger.info("Login attempt for user: {}", userLoginDTO);
-        try{
+        try {
             User user = userService.authenticateUser(userLoginDTO);
             if (user != null) {
-                String token = userService.generateToken(user);
                 setAuthentication(user);
 
-                  // Create a response map
+    // Log the security context to ensure it is set correctly
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (principal instanceof UserDetails) {
+        UserDetails userDetails = (UserDetails) principal;
+        logger.info("Security context set for user: {}", userDetails.getUsername());
+    } else {
+        logger.warn("Security context principal is not an instance of UserDetails: {}", principal);
+    }
                 Map<String, String> response = new HashMap<>();
-                response.put("token", token);
+                response.put("message", "Login successful");
                 response.put("username", user.getUsername());
-
+    
                 return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.status(400).body("{\"message\": \"Failed to login account\"}");
             }
-        }catch(Exception e) {
+        } catch (Exception e) {
+            logger.error("An error occurred while logging in account", e);
             return ResponseEntity.status(500).body("{\"message\": \"An error occurred while logging in account\"}");
         }
     }
@@ -103,6 +109,28 @@ public class UserController {
             return ResponseEntity.status(500).body("An error occured while fetching profile information");
         }
     }
+    
+    @GetMapping("/search")
+public ResponseEntity<?> searchUsers(@RequestParam String query) {
+    try {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) principal;
+            String requestingUsername = userDetails.getUsername();
+            logger.info("Search request made by user: {}", requestingUsername); // Log the username
+            List<User> users = userService.searchUsers(query, requestingUsername);
+            if (users.isEmpty()) {
+                return ResponseEntity.status(404).body("No users found with the given query");
+            }
+            return ResponseEntity.ok(users);
+        } else {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+    } catch (Exception e) {
+        return ResponseEntity.status(500).body("An error occurred while searching for users");
+    }
+}
+    
 
     @Autowired
     public UserController(UserService userService, GameService gameService) {

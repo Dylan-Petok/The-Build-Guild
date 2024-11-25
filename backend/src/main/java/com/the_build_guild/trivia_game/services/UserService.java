@@ -5,21 +5,24 @@ import com.the_build_guild.trivia_game.dtos.UserLoginDTO;
 import com.the_build_guild.trivia_game.models.User;
 import com.the_build_guild.trivia_game.repositories.UserRepository;
 import com.the_build_guild.trivia_game.repositories.GameRepository;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.Jwts;
 
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 public class UserService {
@@ -29,6 +32,14 @@ public class UserService {
     
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+  
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -59,32 +70,38 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-     public User createUser(UserCreationDTO userCreationDTO) {
+    public User createUser(UserCreationDTO userCreationDTO) {
         User user = new User();
         user.setUsername(userCreationDTO.getUserName());
         user.setEmail(userCreationDTO.getEmailAddr());
-        user.setPasswordHash(userCreationDTO.getPassword()); // Ensure to hash the password before saving
+        user.setPasswordHash(passwordEncoder.encode(userCreationDTO.getPassword())); // Ensure to hash the password before saving
         user.setScore(0);
         user.setGamesPlayedCount(0);
+        user.setFriends(new String[0]);
         return userRepository.save(user);
-    }
-
-    public String generateToken(User user) {
-        return Jwts.builder()
-                .setSubject(user.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day expiration
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                .compact();
     }
 
     
     public User authenticateUser(UserLoginDTO userLoginDTO) {
         logger.info("Authenticating user: {}", userLoginDTO.getUserName());
         User user = userRepository.findByUsername(userLoginDTO.getUserName());
-        if (user != null && user.getPasswordHash().equals(userLoginDTO.getPassword())) {
-            logger.info("Authentication successful for user: {}", userLoginDTO.getUserName());
-            return user;
+        if (user != null) {
+            logger.info("Stored password hash: {}", user.getPasswordHash());
+            logger.info("Raw password: {}", userLoginDTO.getPassword());
+            if (passwordEncoder.matches(userLoginDTO.getPassword(), user.getPasswordHash())) {
+                logger.info("Authentication successful for user: {}", userLoginDTO.getUserName());
+    
+                // Authenticate the user using Spring Security's AuthenticationManager
+                Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(userLoginDTO.getUserName(), userLoginDTO.getPassword()));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+    
+                return user;
+            } else {
+                logger.warn("Password mismatch for user: {}", userLoginDTO.getUserName());
+            }
+        } else {
+            logger.warn("User not found: {}", userLoginDTO.getUserName());
         }
         logger.warn("Authentication failed for user: {}", userLoginDTO.getUserName());
         return null;
@@ -122,5 +139,11 @@ public class UserService {
         User user = userRepository.findByUsername(username);
         return user != null ? user.getId() : null;
     }
-    
+
+    public List<User> searchUsers(String query, String requestingUsername) {
+        List<User> users = userRepository.findByUsernameContainingIgnoreCase(query);
+        return users.stream()
+                    .filter(user -> !user.getUsername().equalsIgnoreCase(requestingUsername))
+                    .collect(Collectors.toList());
     }
+}
