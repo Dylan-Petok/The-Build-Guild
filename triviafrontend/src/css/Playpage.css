@@ -70,7 +70,7 @@ button[type="submit"]:hover {
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    text-align: center;
+    align-content: center;
     width: 600px;
     margin: 0 auto;
 }
@@ -80,6 +80,7 @@ button[type="submit"]:hover {
     font-size: 1.8em;
     color: #ffffff;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 .play-options {
