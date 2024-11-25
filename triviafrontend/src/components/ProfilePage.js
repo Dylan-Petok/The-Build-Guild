@@ -5,10 +5,10 @@ import '../css/ProfilePage.css';
 const ProfilePage = () => {
     const { isAuthenticated } = useAuth();
     const [profileData, setProfileData] = useState({
-        totalGamesPlayed: 0,
-        highestScore: 0,
-        globalRank: 0,
-        currentScore: 0
+        totalGamesPlayed: 115,
+        highestScore: 100,
+        globalRank: 1,
+        currentScore: 700
     });
 
     useEffect(() => {
@@ -18,7 +18,7 @@ const ProfilePage = () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you use token-based authentication
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` 
                 }
             })
                 .then(response => response.json())
