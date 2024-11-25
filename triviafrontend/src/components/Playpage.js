@@ -18,6 +18,7 @@ const Playpage = () => {
     const [isCorrect, setIsCorrect] = useState(null);
     const [correctAnswer, setCorrectAnswer] = useState(''); 
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
+    const [quizStarted, setQuizStarted] = useState(false); 
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -62,6 +63,7 @@ const Playpage = () => {
                     };
                 });
                 setQuestions(processedQuestions);
+                setQuizStarted(true);
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -148,7 +150,9 @@ const Playpage = () => {
    
 
     return (
-        <div>
+        <div className="playpage-container">
+            {!quizStarted ? (
+                <>
             <h1>Quiz Settings</h1>
             <form onSubmit={handleSubmit}>
                 <div>
@@ -194,16 +198,20 @@ const Playpage = () => {
                 </div>
                 <button type="submit">Submit</button>
             </form>
-
-            {questions.length > 0 && (
-                <div>
+            </>
+        ) : (
+                <div className="quiz-container">
                     <h2>Question {currentQuestionIndex + 1}</h2>
-                    <p>{questions[currentQuestionIndex].question}</p>
+                    <p  className="question-text">{questions[currentQuestionIndex].question}</p>
                     {feedback && (
                         <p className={isCorrect ? 'correct' : 'incorrect'}>{feedback}</p> // Display feedback message
                     )}
+                    <div className="answer-total-container">
                     {questions[currentQuestionIndex].options.map((option, index) => (
-                        <div key={index}>
+                        <div
+                        className={`answer-single-container ${isCorrect === false && option === correctAnswer ? 'correct-answer' : ''}`}
+                        key={index}
+                        >
                             <input
                                 type="radio"
                                 id={`option${index}`}
@@ -212,10 +220,11 @@ const Playpage = () => {
                                 checked={selectedOption === option}
                                 onChange={handleOptionChange}
                             />
-                            <label htmlFor={`option${index}`} className={isCorrect === false && option === correctAnswer ? 'correct-answer' : ''}>{option}</label>
-                        </div>
+                                <label htmlFor={`option${index}`}>{option}</label>
+                            </div>
                     ))}
-                    <button onClick={handleNextQuestion} disabled={isSubmitDisabled}>Next</button>
+                    </div>
+                    <button className="nextButton" onClick={handleNextQuestion} disabled={isSubmitDisabled}>Next</button>
                 </div>
             )}
         </div>
