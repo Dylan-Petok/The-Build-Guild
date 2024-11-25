@@ -2,6 +2,10 @@ package com.the_build_guild.trivia_game.controllers;
 
 import com.the_build_guild.trivia_game.models.User;
 import com.the_build_guild.trivia_game.services.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 import com.the_build_guild.trivia_game.services.GameService;
 import com.the_build_guild.trivia_game.dtos.ProfileInfoDTO;
 import com.the_build_guild.trivia_game.dtos.UserCreationDTO;
@@ -46,46 +50,33 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createAccount(@RequestBody UserCreationDTO userCreationDTO) {
-        try{
+        try {
             User user = userService.createUser(userCreationDTO);
-            if (user != null) {
-                setAuthentication(user);
-                return ResponseEntity.ok("{\"message\": \"Account created successfully\"}");
-            } else {
-                return ResponseEntity.status(400).body("{\"message\": \"Failed to login account\"}");
-            }
-        }catch(Exception e) {
-            return ResponseEntity.status(500).body("{\"message\": \"An error occurred while logging in account\"}");
+            return ResponseEntity.ok(Map.of("message", "Account created successfully", "username", user.getUsername()));
+        } catch (Exception e) {
+            logger.error("Error creating account", e);
+            return ResponseEntity.status(500).body(Map.of("message", "An error occurred while creating the account"));
         }
     }
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO) {
+    public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO, HttpServletRequest request) {
         logger.info("Login attempt for user: {}", userLoginDTO);
         try {
-            User user = userService.authenticateUser(userLoginDTO);
-            if (user != null) {
-                setAuthentication(user);
-
-    // Log the security context to ensure it is set correctly
-    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    if (principal instanceof UserDetails) {
-        UserDetails userDetails = (UserDetails) principal;
-        logger.info("Security context set for user: {}", userDetails.getUsername());
-    } else {
-        logger.warn("Security context principal is not an instance of UserDetails: {}", principal);
-    }
-                Map<String, String> response = new HashMap<>();
-                response.put("message", "Login successful");
-                response.put("username", user.getUsername());
-    
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity.status(400).body("{\"message\": \"Failed to login account\"}");
-            }
+            User user = userService.authenticateUser(userLoginDTO, request); // Handles authentication and SecurityContext
+             HttpSession session = request.getSession(true); // Ensure session is created
+        logger.info("Session created for user: {}, Session ID: {}", user.getUsername(), session.getId());
+            return ResponseEntity.ok(Map.of("message", "Login successful", "username", user.getUsername()));
         } catch (Exception e) {
-            logger.error("An error occurred while logging in account", e);
-            return ResponseEntity.status(500).body("{\"message\": \"An error occurred while logging in account\"}");
+            logger.error("Error during login", e);
+            return ResponseEntity.status(400).body(Map.of("message", "Login failed"));
         }
+    }
+
+    
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout() {
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok("{\"message\": \"Logout successful\"}");
     }
     
     @GetMapping("/profileInfo")
@@ -170,14 +161,5 @@ public ResponseEntity<?> searchUsers(@RequestParam String query) {
     }
 
     
-    private void setAuthentication(User user) {
-        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
-                .password(user.getPasswordHash())
-                .roles("USER")
-                .build();
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
+
 }

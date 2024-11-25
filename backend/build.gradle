@@ -47,6 +47,7 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.springframework.session:spring-session-data-mongodb'
+	implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
 	}
 
 tasks.named('test') {

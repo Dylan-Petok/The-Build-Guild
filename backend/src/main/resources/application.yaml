@@ -29,3 +29,4 @@ logging:
   level:
     '[org.springframework.security]': DEBUG
     '[org.springframework.web]': DEBUG
+    '[org.springframework.session]': DEBUG
