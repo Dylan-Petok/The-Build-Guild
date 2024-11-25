@@ -72,12 +72,17 @@ public class UserController {
         }
     }
 
-    
-    @GetMapping("/logout")
-    public ResponseEntity<?> logout() {
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
         SecurityContextHolder.clearContext();
-        return ResponseEntity.ok("{\"message\": \"Logout successful\"}");
+        return ResponseEntity.ok(Map.of("message", "Logout successful"));
     }
+
+
     
     @GetMapping("/profileInfo")
     public ResponseEntity<?> profileInfo(){
