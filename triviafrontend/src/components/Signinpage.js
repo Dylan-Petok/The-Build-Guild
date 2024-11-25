@@ -32,6 +32,7 @@ const SignInPage = () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData),
+                credentials: 'include'
             });
             if (response.ok) {
                 const data = await response.json()

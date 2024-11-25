@@ -13,7 +13,7 @@ function Header() {
     const [searchResults, setSearchResults] = useState([]);
 
     const handleLogout = () => {
-        fetchInterceptor('http://localhost:8080/logout', {
+        fetchInterceptor('http://localhost:8080/api/users/logout', {
             method: 'POST',
             credentials: 'include',
             headers: {
