@@ -41,11 +41,11 @@ const SignUpPage = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(dataToSend)
+                body: JSON.stringify(dataToSend),
+                credentials: 'include'
             });
             if (response.ok) {
                 const data = await response.json();
-                localStorage.setItem('token', data.token);
                 localStorage.setItem('username', data.username);
                 toast.success('Account successfully created!');  // Show success message
                 login();

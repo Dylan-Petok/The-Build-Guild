@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { toast } from 'react-toastify';
+import fetchInterceptor from '../utils/fetchInterceptor';
 import '../css/AuthPage.css';
 
 const SignInPage = () => {
@@ -25,17 +26,17 @@ const SignInPage = () => {
         e.preventDefault();
         console.log('Sign-in request sent with data:', formData);
         try {
-            const response = await fetch('http://localhost:8080/api/users/login', {
+            const response = await fetchInterceptor('http://localhost:8080/api/users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(formData),
             });
             if (response.ok) {
                 const data = await response.json()
-                localStorage.setItem('token', data.token);
                 localStorage.setItem('username', data.username);
+                localStorage.setItem('friends', data.friends);
                 toast.success('Log-in successful!')
                 console.log('Sign-in successful');
                 login();
