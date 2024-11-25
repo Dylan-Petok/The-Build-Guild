@@ -17,7 +17,7 @@ function Header() {
             method: 'POST',
             credentials: 'include',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json'
             }
         }).then(response => {
             if (response.ok) {
