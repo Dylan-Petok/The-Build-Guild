@@ -69,22 +69,36 @@ public class DataInitializer {
        
             // Create dummy games
             Game game1 = Game.builder()
-                    .topic("Science")
-                    .difficulty("Medium")
-                    .correctAnswers(8)
-                    .totalQuestions(10)
-                    .datePlayed(new Date())
-                    .build();
+                        .userId(user1.getId())
+                        .topic("Science")
+                        .difficulty("Medium")
+                        .correctAnswers(8)
+                        .totalQuestions(10)
+                        .gameScore(80)
+                        .datePlayed(new Date())
+                        .build();
 
-            Game game2 = Game.builder()
-                    .topic("History")
-                    .difficulty("Hard")
-                    .correctAnswers(5)
-                    .totalQuestions(10)
-                    .datePlayed(new Date())
-                    .build();
+                Game game2 = Game.builder()
+                        .userId(user1.getId())
+                        .topic("History")
+                        .difficulty("Hard")
+                        .correctAnswers(5)
+                        .totalQuestions(10)
+                        .gameScore(50)
+                        .datePlayed(new Date())
+                        .build();
 
-            gameRepository.saveAll(Arrays.asList(game1, game2));
+                Game game3 = Game.builder()
+                        .userId(user2.getId())
+                        .topic("History")
+                        .difficulty("Medium")
+                        .correctAnswers(7)
+                        .totalQuestions(10)
+                        .gameScore(70)
+                        .datePlayed(new Date())
+                        .build();
+
+            gameRepository.saveAll(Arrays.asList(game1, game2, game3));
             logger.info("Games saved: " + gameRepository.findAll());
 
               // Create dummy friend game stats
