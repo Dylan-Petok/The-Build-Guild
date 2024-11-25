@@ -1,46 +1,46 @@
-/* Container for the profile page */
+
 .profile-container {
     max-width: 800px;
     margin: 50px auto;
     padding: 20px;
-    background-color: #463e56; /* Primary background */
+    background-color: #463e56;
     border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Darker shadow for depth */
-    color: #f5f5f5; /* Neutral Light for text */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); 
+    color: #f5f5f5; 
     font-family: 'Arial', sans-serif;
 }
 
-/* Header for the profile page */
+
 .profile-container h1 {
     text-align: center;
     font-size: 2.5rem;
-    color: #21a1f1; /* Accent color */
+    color: #21a1f1; 
     margin-bottom: 30px;
 }
 
-/* Profile information section */
+
 .profile-info {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-/* Styling each information item */
+
 .profile-info p {
     font-size: 1.2rem;
-    background-color: #6a5b7d; /* Secondary color */
-    color: #f5f5f5; /* Neutral Light for text */
+    background-color: #6a5b7d; 
+    color: #f5f5f5; 
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Bold label inside each item */
+
 .profile-info p strong {
-    color: #21a1f1; /* Accent for emphasis */
+    color: #21a1f1; 
 }
 
-/* Responsive design adjustments */
+
 @media (max-width: 768px) {
     .profile-container {
         padding: 15px;
@@ -55,21 +55,21 @@
         font-size: 1rem;
     }
 }
-/* Achievements Section */
+
 .profile-achievements {
     margin-top: 30px;
 }
 
 .profile-achievements h2 {
-    color: #21a1f1; /* Accent color */
+    color: #21a1f1; 
     font-size: 1.8rem;
     margin-bottom: 15px;
 }
 
 .achievement-badge {
     display: inline-block;
-    background-color: #6a5b7d; /* Secondary color */
-    color: #f5f5f5; /* Neutral Light for text */
+    background-color: #6a5b7d;
+    color: #f5f5f5; 
     padding: 10px 15px;
     border-radius: 5px;
     margin: 5px;
