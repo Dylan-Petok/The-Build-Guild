@@ -9,7 +9,7 @@ const PrivateRoute = ({ children }) => {
 
     useEffect(() => {
         if (!isAuthenticated) {
-            toast.error('You must be logged in to access this page.');
+            toast.error('You must be logged in to access this page.', { toastId: 'private-route-error' });
         }
     }, [isAuthenticated, location.pathname]);
 

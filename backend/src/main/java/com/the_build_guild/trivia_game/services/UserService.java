@@ -4,22 +4,34 @@ import com.the_build_guild.trivia_game.dtos.UserCreationDTO;
 import com.the_build_guild.trivia_game.dtos.UserLoginDTO;
 import com.the_build_guild.trivia_game.models.User;
 import com.the_build_guild.trivia_game.repositories.UserRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 import com.the_build_guild.trivia_game.repositories.GameRepository;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+
+import java.util.ArrayList;
 import java.util.Date;
 
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.Jwts;
 
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 @Service
 public class UserService {
@@ -29,6 +41,14 @@ public class UserService {
     
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+  
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -59,36 +79,63 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-     public User createUser(UserCreationDTO userCreationDTO) {
+    public User createUser(UserCreationDTO userCreationDTO) {
         User user = new User();
         user.setUsername(userCreationDTO.getUserName());
         user.setEmail(userCreationDTO.getEmailAddr());
-        user.setPasswordHash(userCreationDTO.getPassword()); // Ensure to hash the password before saving
+        user.setPasswordHash(passwordEncoder.encode(userCreationDTO.getPassword())); // Ensure to hash the password before saving
         user.setScore(0);
         user.setGamesPlayedCount(0);
+        user.setFriends(new String[0]);
         return userRepository.save(user);
     }
 
-    public String generateToken(User user) {
-        return Jwts.builder()
-                .setSubject(user.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day expiration
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                .compact();
-    }
-
     
-    public User authenticateUser(UserLoginDTO userLoginDTO) {
+    // public User authenticateUser(UserLoginDTO userLoginDTO) {
+    //     logger.info("Authenticating user: {}", userLoginDTO.getUserName());
+    //     User user = userRepository.findByUsername(userLoginDTO.getUserName());
+    //     if (user != null) {
+    //         logger.info("Stored password hash: {}", user.getPasswordHash());
+    //         logger.info("Raw password: {}", userLoginDTO.getPassword());
+    //         if (passwordEncoder.matches(userLoginDTO.getPassword(), user.getPasswordHash())) {
+    //             logger.info("Authentication successful for user: {}", userLoginDTO.getUserName());
+    
+    //             // Authenticate the user using Spring Security's AuthenticationManager
+    //             Authentication authentication = authenticationManager.authenticate(
+    //                     new UsernamePasswordAuthenticationToken(userLoginDTO.getUserName(), userLoginDTO.getPassword()));
+    //             SecurityContextHolder.getContext().setAuthentication(authentication);
+    
+    //             return user;
+    //         } else {
+    //             logger.warn("Password mismatch for user: {}", userLoginDTO.getUserName());
+    //         }
+    //     } else {
+    //         logger.warn("User not found: {}", userLoginDTO.getUserName());
+    //     }
+    //     logger.warn("Authentication failed for user: {}", userLoginDTO.getUserName());
+    //     return null;
+    // }
+
+    public User authenticateUser(UserLoginDTO userLoginDTO, HttpServletRequest request) {
         logger.info("Authenticating user: {}", userLoginDTO.getUserName());
-        User user = userRepository.findByUsername(userLoginDTO.getUserName());
-        if (user != null && user.getPasswordHash().equals(userLoginDTO.getPassword())) {
-            logger.info("Authentication successful for user: {}", userLoginDTO.getUserName());
-            return user;
-        }
-        logger.warn("Authentication failed for user: {}", userLoginDTO.getUserName());
-        return null;
-    }
+
+        // Authenticate user
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(userLoginDTO.getUserName(), userLoginDTO.getPassword())
+        );
+
+     // Set the authentication in the SecurityContext
+    SecurityContext securityContext = SecurityContextHolder.getContext();
+    securityContext.setAuthentication(authentication);
+
+    // Ensure the SecurityContext is saved in the session
+    HttpSession session = request.getSession(true);
+    session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+
+    logger.info("Session ID for authenticated user {}: {}", userLoginDTO.getUserName(), session.getId());
+    return userRepository.findByUsername(userLoginDTO.getUserName());
+}
+    
 
     public void updateScoreAndGamesPlayed(String userId, int scoreIncrement){
         logger.info("Updating score and games played for user ID: {}", userId);
@@ -122,5 +169,50 @@ public class UserService {
         User user = userRepository.findByUsername(username);
         return user != null ? user.getId() : null;
     }
-    
+
+    public List<User> searchUsers(String query, String requestingUsername) {
+        List<User> users = userRepository.findByUsernameContainingIgnoreCase(query);
+        return users.stream()
+                    .filter(user -> !user.getUsername().equalsIgnoreCase(requestingUsername))
+                    .limit(5)
+                    .collect(Collectors.toList());
     }
+    public void addFriend(String requestingUsername, String friendUsername) {
+        User requestingUser = userRepository.findByUsername(requestingUsername);
+        User friendUser = userRepository.findByUsername(friendUsername);
+        logger.info("User sending request: {}", requestingUser);
+        logger.info("User to be added: {}", friendUser);
+
+        if (requestingUser != null && friendUser != null) {
+            List<String> friendsList = new ArrayList<>(Arrays.asList(requestingUser.getFriends()));
+            if (!friendsList.contains(friendUser.getId())) {
+                friendsList.add(friendUser.getUsername());
+                requestingUser.setFriends(friendsList.toArray(new String[0]));
+                userRepository.save(requestingUser);
+                logger.info("Friend added: {} to user: {}", friendUsername, requestingUsername);
+            } else {
+                logger.warn("Friend {} is already in the friends list of user {}", friendUsername, requestingUsername);
+            }
+        } else {
+            throw new IllegalArgumentException("User not found");
+        }
+    }
+    
+
+        public void deleteFriend(String requestingUsername, String friendUsername) {
+        User requestingUser = userRepository.findByUsername(requestingUsername);
+        User friendUser = userRepository.findByUsername(friendUsername);
+
+        if (requestingUser != null && friendUser != null) {
+            List<String> friendsList = new ArrayList<>(List.of(requestingUser.getFriends()));
+            if (friendsList.contains(friendUser.getUsername())) {
+                friendsList.remove(friendUser.getUsername());
+                requestingUser.setFriends(friendsList.toArray(new String[0]));
+                userRepository.save(requestingUser);
+            }
+        } else {
+            throw new IllegalArgumentException("User not found");
+        }
+    }
+
+}

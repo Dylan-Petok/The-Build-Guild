@@ -1,7 +1,9 @@
 import React, { useEffect, useState} from 'react';
+import { useAuth } from '../../AuthContext';
 import '../../css/Leaderboard.css';
 
 const FriendsLeaderboard = () =>{
+    const { logout } = useAuth();
     const [leaderboard, setLeaderboard] = useState([]);
     const [error, setError] = useState(false);
 
@@ -21,7 +23,7 @@ const FriendsLeaderboard = () =>{
                 console.error('Error fetching leaderboard data:', error);
                 setError(true);
     });
-    }, []);
+    }, [logout]);
 
     if(error){
         return <div className="leaderboard-container">Stats are currently unavailable</div>

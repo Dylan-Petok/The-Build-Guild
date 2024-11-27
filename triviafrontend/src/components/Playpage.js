@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
+import fetchInterceptor from '../utils/fetchInterceptor';
 import '../css/Playpage.css';
 
 const Playpage = () => {
@@ -8,6 +10,8 @@ const Playpage = () => {
         category: '',
         difficulty: ''
     });
+    const { logout } = useAuth();
+
 
     const [categories, setCategories] = useState([]);
     const [questions, setQuestions] = useState([]);
@@ -43,13 +47,14 @@ const Playpage = () => {
         console.log('Username:', username);
         console.log('Form submitted:', formData);
        
-        fetch('http://localhost:8080/api/trivia/play', {
+        fetchInterceptor('http://localhost:8080/api/trivia/play', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(formData)
-        })
+            body: JSON.stringify(formData),
+            credentials: 'include'
+        }, logout, navigate)
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
@@ -125,13 +130,14 @@ const Playpage = () => {
                 console.log(gameData);
 
                 // Send game data to the backend
-                fetch('http://localhost:8080/api/trivia/saveGame', {
+                fetchInterceptor('http://localhost:8080/api/trivia/saveGame', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(gameData)
-                })
+                    body: JSON.stringify(gameData),
+                    credentials: 'include'
+                }, logout, navigate)
                 .then(response => response.json())
                 .then(data => {
                     console.log('Game data saved:', data);

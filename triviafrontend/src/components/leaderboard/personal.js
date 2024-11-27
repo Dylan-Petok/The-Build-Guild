@@ -39,6 +39,7 @@ const PersonalLeaderboard = ({ username }) => {
         return <div className="leaderboard-container">No personal best records found.</div>;
     }
 
+
     return (
         <div className="leaderboard-container">
             <h2>Personal Best Leaderboard</h2>
