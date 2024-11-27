@@ -112,3 +112,10 @@
 .navbar .auth-item .search-container .search-input:focus + .search-icon {
   color: #21a1f1;
 }
+
+.add-friend-button{
+  background-color: green;
+}
+.delete-friend-button{
+  background-color: red;
+}

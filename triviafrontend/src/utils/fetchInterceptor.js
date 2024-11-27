@@ -1,7 +1,7 @@
 // src/utils/fetchInterceptor.js
 import { toast } from 'react-toastify';
 
-const fetchInterceptor = async (url, options = {}, navigate) => {
+const fetchInterceptor = async (url, options = {}, logout, navigate) => {
 
     try {
         const response = await fetch(url, options);
@@ -9,17 +9,18 @@ const fetchInterceptor = async (url, options = {}, navigate) => {
         if (response.status === 401) {
             // Handle unauthorized response
             toast.error('Session expired. Please log in again.');
-            localStorage.removeItem('isAuthenticated');
-            localStorage.removeItem('friendsList');
-            localStorage.removeItem('username');
-            navigate('/signin');
+            logout();
+            navigate('/');
             return null;
         }
 
         return response;
     } catch (error) {
         console.error('Fetch error:', error);
-        throw error;
+        toast.error('Network error. Please try again later.');
+        logout();
+        navigate('/');
+        return null;
     }
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../AuthContext';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -11,6 +11,8 @@ function Header() {
     const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState('');
     const [searchResults, setSearchResults] = useState([]);
+    const searchContainerRef = useRef(null);
+
 
     const handleLogout = () => {
         fetchInterceptor('http://localhost:8080/api/users/logout', {
@@ -19,7 +21,7 @@ function Header() {
             headers: {
                 'Content-Type': 'application/json'
             }
-        }).then(response => {
+        }, logout, navigate).then(response => {
             if (response.ok) {
                 logout(() => {
                     toast.success('Successfully logged out!');
@@ -47,7 +49,7 @@ function Header() {
                         'Content-Type': 'application/json',
                     },
                     credentials: 'include'
-                });
+                }, logout, navigate);
                 const data = await response.json();
                 setSearchResults(data); 
             } catch (error) {
@@ -61,21 +63,48 @@ function Header() {
     
     const handleAddFriend = async (username) => {
         try {
-            await addFriend(username);
-            toast.success(`Friend request sent to ${username}!`);
+            const response = await addFriend(username);
+            if (response.ok) {
+                toast.success(`User: ${username} added!`);
+            } else {
+                const errorData = await response.json();
+                toast.error(`Failed to send friend request: ${errorData.message}`);
+            }
         } catch (error) {
+            console.error('Error sending friend request:', error);
             toast.error('Failed to send friend request.');
         }
     };
-
+    
     const handleDeleteFriend = async (username) => {
         try {
-            await deleteFriend(username);
-            toast.success(`Removed ${username} from friends!`);
+            const response = await deleteFriend(username);
+            if (response.ok) {
+                toast.success(`Removed ${username} from friends!`);
+            } else {
+                const errorData = await response.json();
+                toast.error(`Failed to remove friend: ${errorData.message}`);
+            }
         } catch (error) {
+            console.error('Error removing friend:', error);
             toast.error('Failed to remove friend.');
         }
     };
+
+    // this is to clear the search bar characters when a user clicks out of the search bar
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+                setSearchInput('');
+                setSearchResults([]);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
 
     return (
@@ -104,7 +133,7 @@ function Header() {
                             </li>
         {/* ---------------------------- search bar  -------------------------------------- */}
         <li className="navbar-item search-bar">
-                                <div className="search-container">
+                                <div className="search-container" ref={searchContainerRef}>
                                     <input 
                                         type="text" 
                                         placeholder="Add a friend" 
@@ -119,7 +148,7 @@ function Header() {
                                                 <li key={index} className="search-result-item">
                                                     <span>{user.username}</span>
                                                     {friendsList.includes(user.username) ? (
-                                                        <button onClick={() => handleDeleteFriend(user.username)} className="add-friend-button">
+                                                        <button onClick={() => handleDeleteFriend(user.username)} className="delete-friend-button">
                                                             <i className="fas fa-user-minus"></i>
                                                         </button>
                                                     ) : (

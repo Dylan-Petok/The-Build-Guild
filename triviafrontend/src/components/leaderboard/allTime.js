@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../AuthContext';
 import '../../css/Leaderboard.css';
 
 const AllTimeLeaderboard = () =>{
+    const { logout } = useAuth();
     const [leaderboard, setLeaderboard] = useState([]);
 
 
@@ -11,7 +13,7 @@ const AllTimeLeaderboard = () =>{
             .then(response => response.json())
             .then(data => setLeaderboard(data))
             .catch(error => console.error('Error fetching leaderboard data:', error));
-    }, []);
+    }, [logout]);
 
     return (
         <div className="leaderboard-container">

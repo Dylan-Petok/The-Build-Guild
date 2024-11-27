@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../AuthContext';
 import '../css/ProfilePage.css';
+import fetchInterceptor from '../utils/fetchInterceptor';
+import { useNavigate } from 'react-router-dom';
+
+
 
 const ProfilePage = () => {
     const { isAuthenticated } = useAuth();
-    const [profileData, setProfileData] = useState({
-        totalGamesPlayed: 0,
-        highestScore: 0,
-        globalRank: 0,
-        currentScore: 0
-    });
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+    const [profileData, setProfileData] = useState({});
 
     useEffect(() => {
         if (isAuthenticated) {
             // Fetch profile data from the backend
-            fetch('http://localhost:8080/api/users/profileInfo', {
+            fetchInterceptor('http://localhost:8080/api/users/profileInfo', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming you use token-based authentication
-                }
-            })
+                },
+                credentials: 'include'
+            },logout)
                 .then(response => response.json())
                 .then(data => {
                     setProfileData({
@@ -32,7 +33,7 @@ const ProfilePage = () => {
                 })
                 .catch(error => console.error('Error fetching profile data:', error));
         }
-    }, [isAuthenticated]);
+    }, []);
 
 
 

@@ -1,31 +1,44 @@
 import React, { useEffect, useState} from 'react';
+import { useAuth } from '../../AuthContext';
+import fetchInterceptor from '../../utils/fetchInterceptor';
 import '../../css/Leaderboard.css';
 
 const PersonalLeaderboard = () =>{
+    const { logout } = useAuth();
     const [leaderboard, setLeaderboard] = useState([]);
     const [error, setError] = useState(false);
 
 
-
     useEffect(() => {
-        // Fetch leaderboard data from the backend
-        fetch('http://localhost:8080/api/leaderboard/personal')
-            .then(response => response.json())
-            .then(data => {
-                if (Array.isArray(data)) {
-                    setLeaderboard(data);
+        const fetchLeaderboard = async () => {
+            try {
+                const response = await fetchInterceptor('http://localhost:8080/api/leaderboard/personal', {
+                    method: 'GET',
+                    credentials: 'include'
+                }, logout);
+                if (response) {
+                    const data = await response.json();
+                    if (Array.isArray(data)) {
+                        setLeaderboard(data);
+                    } else {
+                        setError(true);
+                    }
                 } else {
                     setError(true);
                 }
-            })            .catch(error => {
-                console.error('Error fetching leaderboard data:', error)
+            } catch (error) {
+                console.error('Error fetching leaderboard data:', error);
                 setError(true);
-    });
-    }, []);
+            }
+        };
 
-    if(error){
-        return <div className="leaderboard-container">Stats are currently unavailable</div>
+        fetchLeaderboard();
+    }, [logout]);
+
+    if (error) {
+        return <div className="leaderboard-container">Stats are currently unavailable</div>;
     }
+
 
     return (
         <div className="leaderboard-container">
