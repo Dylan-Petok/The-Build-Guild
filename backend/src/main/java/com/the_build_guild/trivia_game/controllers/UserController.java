@@ -126,6 +126,52 @@ public ResponseEntity<?> searchUsers(@RequestParam String query) {
         return ResponseEntity.status(500).body("An error occurred while searching for users");
     }
 }
+
+@PostMapping("/addFriend")
+public ResponseEntity<?> addFriend(@RequestBody Map<String, String> requestBody) {
+    String friendUsername = requestBody.get("username");
+    logger.info("Add friend request received for friendUsername: {}", friendUsername);
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (principal instanceof UserDetails) {
+        UserDetails userDetails = (UserDetails) principal;
+        String requestingUsername = userDetails.getUsername();
+        logger.info("User Requesting friend: {}", requestingUsername);
+        try {
+            userService.addFriend(requestingUsername, friendUsername);
+            User user = userService.findByUsername(requestingUsername);
+            return ResponseEntity.ok(Map.of("message", "Friend added successfully", "friendsList", user.getFriends()));
+        } catch (Exception e) {
+            logger.error("Error adding friend", e);
+            return ResponseEntity.status(500).body(Map.of("message", "An error occurred while adding the friend"));
+        }
+    } else {
+        return ResponseEntity.status(401).body(Map.of("message", "Unauthorized"));
+    }
+}
+
+
+@PostMapping("/deleteFriend")
+public ResponseEntity<?> deleteFriend(@RequestBody Map<String, String> requestBody) {
+    String friendUsername = requestBody.get("username");
+    logger.info("Delete friend request received for friendUsername: {}", friendUsername);
+    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (principal instanceof UserDetails) {
+        UserDetails userDetails = (UserDetails) principal;
+        String requestingUsername = userDetails.getUsername();
+        logger.info("User requesting delete: {}", requestingUsername);
+        try {
+            userService.deleteFriend(requestingUsername, friendUsername);
+            User user = userService.findByUsername(requestingUsername);
+            return ResponseEntity.ok(Map.of("message", "Friend deleted successfully", "friendsList", user.getFriends()));
+        } catch (Exception e) {
+            logger.error("Error deleting friend", e);
+            return ResponseEntity.status(500).body(Map.of("message", "An error occurred while deleting the friend"));
+        }
+    } else {
+        return ResponseEntity.status(401).body(Map.of("message", "Unauthorized"));
+    }
+}
+
     
 
     @Autowired

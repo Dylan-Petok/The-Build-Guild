@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import com.the_build_guild.trivia_game.repositories.GameRepository;
+
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -27,6 +29,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 @Service
@@ -170,6 +174,45 @@ public class UserService {
         List<User> users = userRepository.findByUsernameContainingIgnoreCase(query);
         return users.stream()
                     .filter(user -> !user.getUsername().equalsIgnoreCase(requestingUsername))
+                    .limit(5)
                     .collect(Collectors.toList());
     }
+    public void addFriend(String requestingUsername, String friendUsername) {
+        User requestingUser = userRepository.findByUsername(requestingUsername);
+        User friendUser = userRepository.findByUsername(friendUsername);
+        logger.info("User sending request: {}", requestingUser);
+        logger.info("User to be added: {}", friendUser);
+
+        if (requestingUser != null && friendUser != null) {
+            List<String> friendsList = new ArrayList<>(Arrays.asList(requestingUser.getFriends()));
+            if (!friendsList.contains(friendUser.getId())) {
+                friendsList.add(friendUser.getUsername());
+                requestingUser.setFriends(friendsList.toArray(new String[0]));
+                userRepository.save(requestingUser);
+                logger.info("Friend added: {} to user: {}", friendUsername, requestingUsername);
+            } else {
+                logger.warn("Friend {} is already in the friends list of user {}", friendUsername, requestingUsername);
+            }
+        } else {
+            throw new IllegalArgumentException("User not found");
+        }
+    }
+    
+
+        public void deleteFriend(String requestingUsername, String friendUsername) {
+        User requestingUser = userRepository.findByUsername(requestingUsername);
+        User friendUser = userRepository.findByUsername(friendUsername);
+
+        if (requestingUser != null && friendUser != null) {
+            List<String> friendsList = new ArrayList<>(List.of(requestingUser.getFriends()));
+            if (friendsList.contains(friendUser.getUsername())) {
+                friendsList.remove(friendUser.getUsername());
+                requestingUser.setFriends(friendsList.toArray(new String[0]));
+                userRepository.save(requestingUser);
+            }
+        } else {
+            throw new IllegalArgumentException("User not found");
+        }
+    }
+
 }
