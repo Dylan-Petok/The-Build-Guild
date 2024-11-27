@@ -34,7 +34,7 @@ function App() {
                 <Route path="/results" element={<TriviaResults />} />
                 <Route path="/leaderboard/friends" element={<FriendsLeaderboard/>} />
                 <Route path="/leaderboard/alltime" element={<AllTimeLeaderboard />}/>
-                <Route path="/leaderboard/personal" element={<PersonalLeaderboard />} /> 
+                <Route path="/leaderboard/personal" element={<PersonalLeaderboard username={localStorage.getItem('username')} />} /> 
                 <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} /> 
               </Routes>
             </main>

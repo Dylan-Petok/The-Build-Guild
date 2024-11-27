@@ -38,6 +38,10 @@ label {
     color: #ffffff;
 }
 
+.quiz-container label{
+    margin-bottom: 0;
+}
+
 input[type="number"],
 select {
     width: 100%;
@@ -65,14 +69,20 @@ button[type="submit"]:hover {
 }
 
 
-.play-question-container {
-    background-color: #faf8fb;
+.quiz-container {
+    background-color: #463e56;
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    text-align: center;
     width: 600px;
+    color: white;
+    text-align: center;
     margin: 0 auto;
+}
+
+.quiz-container h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
 }
 
 
@@ -82,7 +92,7 @@ button[type="submit"]:hover {
     margin-bottom: 20px;
 }
 
-.play-options {
+.options-container {
     display: flex;
     flex-direction: column;
     align-items: flex-start; 
@@ -91,23 +101,24 @@ button[type="submit"]:hover {
 }
 
 
-.play-option {
+.option {
     background-color: #f0eef2;
     padding: 10px;
     border-radius: 8px;
-    color: white;
+    color: black;
     cursor: pointer;
     transition: background-color 0.3s ease;
     display: flex;
     align-items: center;
 }
 
-.play-option:hover {
-    background-color: #f4f4f4;
+.option:hover {
+    background-color: #e0e0e0;
 }
 
 input[type="radio"] {
     margin-right: 10px;
+    margin-bottom: 3px;
 }
 
 button.next-button {
@@ -126,16 +137,61 @@ button.next-button:hover {
     background-color: #21a1f1;
 }
 
+.feedback {
+    font-size: 1.2em;
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    width: 50%;
+    text-align: center;
+}
+
 .correct {
     background-color: green;
-    width: 25%;
+    color: white;
 }
 
 .incorrect {
     background-color: red;
-    width: 25%;
+    color: white;
 }
 
-.correct-answer {
-    border: 2px solid green;
+.answer-total-container{
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
 }
+
+.answer-single-container{
+    display: flex;
+    justify-content: center;
+    background-color: #6d5c7a;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.answer-single-container.correct-answer {
+    background-color: green;
+    opacity: 0.5;
+}
+
+.nextButton{
+    background-color: #61dafb;
+    padding: 6px 18px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.nextButton:hover {
+    background-color: #21a1f1;
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+

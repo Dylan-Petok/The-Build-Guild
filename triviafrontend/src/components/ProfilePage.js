@@ -39,14 +39,21 @@ const ProfilePage = () => {
 
     return (
         <div className="profile-container">
-        <h1>Profile Page</h1>
-        <div className="profile-info">
-            <p><strong>Total Games Played:</strong> {profileData.totalGamesPlayed}</p>
-            <p><strong>Highest Score in a Game:</strong> {profileData.highestScore}</p>
-            <p><strong>Global Rank:</strong> {profileData.globalRank}</p>
-            <p><strong>Current Score:</strong> {profileData.currentScore}</p>
+            <h1>Profile Page</h1>
+            <div className="profile-info">
+                <p><strong>Total Games Played:</strong> {profileData.totalGamesPlayed}</p>
+                <p><strong>Highest Score in a Game:</strong> {profileData.highestScore}</p>
+                <p><strong>Global Rank:</strong> {profileData.globalRank}</p>
+                <p><strong>Current Score:</strong> {profileData.currentScore}</p>
+            </div>
+
+            {/* Achievements Section */}
+            <div className="profile-achievements">
+                <h2>Achievements</h2>
+                <div className="achievement-badge">🏆 Top Scorer</div>
+                <div className="achievement-badge">🎮 100 Games Played</div>
+            </div>
         </div>
-    </div>
     );
 };
 
