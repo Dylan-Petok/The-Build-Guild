@@ -16,7 +16,8 @@ export const AuthProvider = ({ children }) => {
             setIsAuthenticated(true);
             setFriendsList(storedFriendsList ? JSON.parse(storedFriendsList) : []);
             setUsername(storedUsername);
-
+        } else {
+            setIsAuthenticated(false);
         }
     }, []);
 
