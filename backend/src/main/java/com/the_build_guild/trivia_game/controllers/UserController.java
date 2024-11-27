@@ -49,9 +49,14 @@ public class UserController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<?> createAccount(@RequestBody UserCreationDTO userCreationDTO) {
+    public ResponseEntity<?> createAccount(@RequestBody UserCreationDTO userCreationDTO, HttpServletRequest request) {
         try {
             User user = userService.createUser(userCreationDTO);
+
+            UserLoginDTO userLoginDTO = new UserLoginDTO();
+            userLoginDTO.setUserName(user.getUsername());
+            userLoginDTO.setPassword(userCreationDTO.getPassword());
+            userService.authenticateUser(userLoginDTO, request);
             return ResponseEntity.ok(Map.of("message", "Account created successfully", "username", user.getUsername()));
         } catch (Exception e) {
             logger.error("Error creating account", e);
