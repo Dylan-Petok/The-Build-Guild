@@ -75,7 +75,7 @@ public class UserController {
             User user = userService.authenticateUser(userLoginDTO, request); // Handles authentication and SecurityContext
              HttpSession session = request.getSession(true); // Ensure session is created
             logger.info("Session created for user: {}, Session ID: {}", user.getUsername(), session.getId());
-            return ResponseEntity.ok(Map.of("message", "Login successful", "username", user.getUsername()));
+            return ResponseEntity.ok(Map.of("message", "Login successful", "username", user.getUsername(), "friends", user.getFriends()));
         } catch (UsernameNotFoundException e) {
             logger.error("Error during login: User not found", e);
             return ResponseEntity.status(404).body(Map.of("message", "User not found"));
