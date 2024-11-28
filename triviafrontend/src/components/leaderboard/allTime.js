@@ -8,8 +8,14 @@ const AllTimeLeaderboard = () =>{
 
 
     useEffect(() => {
-        // Fetch leaderboard data from the backend
-        fetch('http://localhost:8080/api/leaderboard/allTime')
+        // Fetch leaderboard data from the backend with credentials
+        fetch('http://localhost:8080/api/leaderboard/allTime', {
+            method: 'GET',
+            credentials: 'include', // Include credentials with the request
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(response => response.json())
             .then(data => setLeaderboard(data))
             .catch(error => console.error('Error fetching leaderboard data:', error));

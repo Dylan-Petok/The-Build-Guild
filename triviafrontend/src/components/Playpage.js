@@ -169,6 +169,8 @@ const Playpage = () => {
                         name="numberOfQuestions"
                         value={formData.numberOfQuestions}
                         onChange={handleChange}
+                        min="1"
+                        max="50"
                         required
                     />
                 </div>
