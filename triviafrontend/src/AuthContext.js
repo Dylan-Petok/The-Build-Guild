@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = () => {
         setIsAuthenticated(true);
+        setUsername(username);
         localStorage.setItem('isAuthenticated', 'true');
     };
 

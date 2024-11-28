@@ -11,9 +11,14 @@ const PersonalLeaderboard = ({ username }) => {
             setError(true);
             return;
         }
-
         console.log(`Fetching leaderboard for username: ${username}`);
-        fetch(`http://localhost:8080/api/leaderboard/personal?username=${username}`)
+        fetch(`http://localhost:8080/api/leaderboard/personal?username=${username}`, {
+            method: 'GET',
+            credentials: 'include', // Include credentials with the request
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(response => {
                 if (!response.ok) {
                     console.error(`Error fetching leaderboard: ${response.statusText}`);

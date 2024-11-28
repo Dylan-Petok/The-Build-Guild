@@ -35,9 +35,9 @@ const SignInPage = () => {
             });
             if ( response && response.ok) {
                 const data = await response.json()
+                console.log(data)
                 localStorage.setItem('username', data.username);
-                localStorage.setItem('friends', data.friends);
-                toast.success('Log-in successful!')
+                localStorage.setItem('friendsList', JSON.stringify(data.friends));                toast.success('Log-in successful!')
                 console.log('Sign-in successful');
                 login();
                 navigate('/');

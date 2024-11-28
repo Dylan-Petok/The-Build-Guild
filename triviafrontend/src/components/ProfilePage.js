@@ -11,8 +11,13 @@ const ProfilePage = () => {
     const { logout } = useAuth();
     const navigate = useNavigate();
     const [profileData, setProfileData] = useState({});
+    const [username, setUsername] = useState('');
+
 
     useEffect(() => {
+        const storedUsername = localStorage.getItem('username');
+        setUsername(storedUsername);
+        
         if (isAuthenticated) {
             // Fetch profile data from the backend
             fetchInterceptor('http://localhost:8080/api/users/profileInfo', {
@@ -39,7 +44,7 @@ const ProfilePage = () => {
 
     return (
         <div className="profile-container">
-            <h1>Profile Page</h1>
+            <h1>{username}</h1>
             <div className="profile-info">
                 <p><strong>Total Games Played:</strong> {profileData.totalGamesPlayed}</p>
                 <p><strong>Highest Score in a Game:</strong> {profileData.highestScore}</p>
