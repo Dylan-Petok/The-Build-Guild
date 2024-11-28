@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { toast } from 'react-toastify';
-import fetchInterceptor from '../utils/fetchInterceptor';
 import '../css/AuthPage.css';
 
 const SignInPage = () => {
@@ -26,7 +25,7 @@ const SignInPage = () => {
         e.preventDefault();
         console.log('Sign-in request sent with data:', formData);
         try {
-            const response = await fetchInterceptor('http://localhost:8080/api/users/login', {
+            const response = await fetch('http://localhost:8080/api/users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -34,7 +33,7 @@ const SignInPage = () => {
                 body: JSON.stringify(formData),
                 credentials: 'include'
             });
-            if (response.ok) {
+            if ( response && response.ok) {
                 const data = await response.json()
                 localStorage.setItem('username', data.username);
                 localStorage.setItem('friends', data.friends);
@@ -42,11 +41,18 @@ const SignInPage = () => {
                 console.log('Sign-in successful');
                 login();
                 navigate('/');
+            } else if(response && (response.status === 404 || response.status === 401)) {
+                const errorData = await response.json();
+                console.error('Sign-in failed invalid username or password');
+                toast.error("Sign-in failed: Invalid username or password!");
             } else {
+                const errorData = await response.json();
                 console.error('Sign-in failed');
+                toast.error(`Sign-in failed: ${errorData.message}`);
             }
         } catch (error) {
             console.error('Error:', error);
+            toast.error('An error occurred. Please try again.');
         }
     };
 

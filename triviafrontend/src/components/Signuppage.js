@@ -11,7 +11,7 @@ const SignUpPage = () => {
         password: '',
         confirmPassword: ''
     });
-    const {logout, } = useAuth();
+    const { login, logout } = useAuth();
 
     const navigate = useNavigate();  
 
@@ -48,10 +48,16 @@ const SignUpPage = () => {
             if (response.ok) {
                 const data = await response.json()
                 localStorage.setItem('username', data.username);
-                toast.success('Account successfully created!');  // Show success message
+                toast.success('Account successfully created!');
+                login();
+                navigate('/')
             } else {
                 const errorData = await response.json();
-                toast.error(`Sign up failed: ${errorData.message}`);  // Show error message
+                if (errorData.message) {
+                    toast.error(`Sign up failed: ${errorData.message}`);  // Show error message
+                } else {
+                    toast.error('Sign up failed: Unknown error occurred');  // Show generic error message
+                }
             }
         } catch (error) {
             console.error('Error:', error);
@@ -87,6 +93,7 @@ const SignUpPage = () => {
                     id="password"
                     value={formData.password}
                     onChange={handleChange}
+                    minLength="8"
                     required
                 />
                 <label for="confirmPassword">Confirm Password:</label>
@@ -95,6 +102,7 @@ const SignUpPage = () => {
                     name="confirmPassword"
                     id="confirmPassword"
                     value={formData.confirmPassword}
+                    minLength="8"
                     onChange={handleChange}
                     required
                 />
