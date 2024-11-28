@@ -18,9 +18,11 @@ import java.util.Date;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +82,15 @@ public class UserService {
     }
 
     public User createUser(UserCreationDTO userCreationDTO) {
+        if (userRepository.findByUsername(userCreationDTO.getUserName()) != null) {
+            logger.error("Username already exists: {}", userCreationDTO.getUserName());
+            throw new IllegalArgumentException("Username already exists");
+        }
+        if (userRepository.findByEmail(userCreationDTO.getEmailAddr()) != null) {
+            logger.error("Email already exists: {}", userCreationDTO.getEmailAddr());
+            throw new IllegalArgumentException("Email already exists");
+        }
+        
         User user = new User();
         user.setUsername(userCreationDTO.getUserName());
         user.setEmail(userCreationDTO.getEmailAddr());
@@ -91,50 +102,35 @@ public class UserService {
     }
 
     
-    // public User authenticateUser(UserLoginDTO userLoginDTO) {
-    //     logger.info("Authenticating user: {}", userLoginDTO.getUserName());
-    //     User user = userRepository.findByUsername(userLoginDTO.getUserName());
-    //     if (user != null) {
-    //         logger.info("Stored password hash: {}", user.getPasswordHash());
-    //         logger.info("Raw password: {}", userLoginDTO.getPassword());
-    //         if (passwordEncoder.matches(userLoginDTO.getPassword(), user.getPasswordHash())) {
-    //             logger.info("Authentication successful for user: {}", userLoginDTO.getUserName());
-    
-    //             // Authenticate the user using Spring Security's AuthenticationManager
-    //             Authentication authentication = authenticationManager.authenticate(
-    //                     new UsernamePasswordAuthenticationToken(userLoginDTO.getUserName(), userLoginDTO.getPassword()));
-    //             SecurityContextHolder.getContext().setAuthentication(authentication);
-    
-    //             return user;
-    //         } else {
-    //             logger.warn("Password mismatch for user: {}", userLoginDTO.getUserName());
-    //         }
-    //     } else {
-    //         logger.warn("User not found: {}", userLoginDTO.getUserName());
-    //     }
-    //     logger.warn("Authentication failed for user: {}", userLoginDTO.getUserName());
-    //     return null;
-    // }
 
     public User authenticateUser(UserLoginDTO userLoginDTO, HttpServletRequest request) {
         logger.info("Authenticating user: {}", userLoginDTO.getUserName());
+
+        User user = userRepository.findByUsername(userLoginDTO.getUserName());
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with username: " + userLoginDTO.getUserName());
+        }
+
+        if (!passwordEncoder.matches(userLoginDTO.getPassword(), user.getPasswordHash())) {
+            throw new BadCredentialsException("Invalid password for user: " + userLoginDTO.getUserName());
+        }
 
         // Authenticate user
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(userLoginDTO.getUserName(), userLoginDTO.getPassword())
         );
 
-     // Set the authentication in the SecurityContext
-    SecurityContext securityContext = SecurityContextHolder.getContext();
-    securityContext.setAuthentication(authentication);
+        // Set the authentication in the SecurityContext
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authentication);
 
-    // Ensure the SecurityContext is saved in the session
-    HttpSession session = request.getSession(true);
-    session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        // Ensure the SecurityContext is saved in the session
+        HttpSession session = request.getSession(true);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
 
-    logger.info("Session ID for authenticated user {}: {}", userLoginDTO.getUserName(), session.getId());
-    return userRepository.findByUsername(userLoginDTO.getUserName());
-}
+        logger.info("Session ID for authenticated user {}: {}", userLoginDTO.getUserName(), session.getId());
+        return user;
+    }
     
 
     public void updateScoreAndGamesPlayed(String userId, int scoreIncrement){

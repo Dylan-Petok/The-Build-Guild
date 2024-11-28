@@ -14,9 +14,11 @@ import com.the_build_guild.trivia_game.dtos.UserLoginDTO;
 
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,6 +60,9 @@ public class UserController {
             userLoginDTO.setPassword(userCreationDTO.getPassword());
             userService.authenticateUser(userLoginDTO, request);
             return ResponseEntity.ok(Map.of("message", "Account created successfully", "username", user.getUsername()));
+        } catch (IllegalArgumentException e) {
+            logger.error("Error creating account: {}", e.getMessage());
+            return ResponseEntity.status(400).body(Map.of("message", e.getMessage()));
         } catch (Exception e) {
             logger.error("Error creating account", e);
             return ResponseEntity.status(500).body(Map.of("message", "An error occurred while creating the account"));
@@ -69,13 +74,20 @@ public class UserController {
         try {
             User user = userService.authenticateUser(userLoginDTO, request); // Handles authentication and SecurityContext
              HttpSession session = request.getSession(true); // Ensure session is created
-        logger.info("Session created for user: {}, Session ID: {}", user.getUsername(), session.getId());
+            logger.info("Session created for user: {}, Session ID: {}", user.getUsername(), session.getId());
             return ResponseEntity.ok(Map.of("message", "Login successful", "username", user.getUsername()));
+        } catch (UsernameNotFoundException e) {
+            logger.error("Error during login: User not found", e);
+            return ResponseEntity.status(404).body(Map.of("message", "User not found"));
+        } catch (BadCredentialsException e) {
+            logger.error("Error during login: Invalid password", e);
+            return ResponseEntity.status(401).body(Map.of("message", "Invalid password"));
         } catch (Exception e) {
             logger.error("Error during login", e);
-            return ResponseEntity.status(400).body(Map.of("message", "Login failed"));
+            return ResponseEntity.status(500).body(Map.of("message", "Login failed"));
         }
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
