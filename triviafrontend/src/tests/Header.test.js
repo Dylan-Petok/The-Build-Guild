@@ -6,22 +6,19 @@ import { useAuth } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-
 jest.mock('../AuthContext', () => ({
   useAuth: jest.fn(),
 }));
 
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: jest.fn(),
-  NavLink: ({ children, to, className, activeClassName }) => (
+  NavLink: ({ children, to, className }) => (
     <a href={to} className={className}>
       {children}
     </a>
   ),
 }));
-
 
 jest.mock('react-toastify', () => ({
   toast: {
@@ -60,7 +57,6 @@ describe('Header Component', () => {
       </MemoryRouter>
     );
 
-
     expect(screen.getByText('Home')).toBeInTheDocument();
     expect(screen.getByText('Play')).toBeInTheDocument();
     expect(screen.getByText('Leaderboard')).toBeInTheDocument();
@@ -76,6 +72,7 @@ describe('Header Component', () => {
     useAuth.mockReturnValue({
       isAuthenticated: true,
       logout: jest.fn(),
+      friendsList: [],
     });
 
     render(
@@ -84,15 +81,12 @@ describe('Header Component', () => {
       </MemoryRouter>
     );
 
-
     expect(screen.getByText('Home')).toBeInTheDocument();
     expect(screen.getByText('Play')).toBeInTheDocument();
     expect(screen.getByText('Leaderboard')).toBeInTheDocument();
 
-
     expect(screen.getByText('Profile')).toBeInTheDocument();
     expect(screen.getByText('Logout')).toBeInTheDocument();
-
 
     expect(screen.queryByText('Sign-In')).not.toBeInTheDocument();
     expect(screen.queryByText('Sign-Up')).not.toBeInTheDocument();
@@ -103,15 +97,16 @@ describe('Header Component', () => {
     useAuth.mockReturnValue({
       isAuthenticated: true,
       logout: mockLogout,
+      friendsList: [],
     });
 
     const mockNavigate = jest.fn();
     useNavigate.mockReturnValue(mockNavigate);
 
-
     global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: true,
+        json: () => Promise.resolve({}),
       })
     );
 
@@ -124,10 +119,11 @@ describe('Header Component', () => {
     fireEvent.click(screen.getByText('Logout'));
 
     await waitFor(() =>
-      expect(global.fetch).toHaveBeenCalledWith('http://localhost:8080/logout', {
+      expect(global.fetch).toHaveBeenCalledWith('http://localhost:8080/api/users/logout', {
         method: 'POST',
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
       })
     );
@@ -138,18 +134,19 @@ describe('Header Component', () => {
   });
 
   test('handles logout failure when response is not ok', async () => {
+    const mockLogout = jest.fn()
     useAuth.mockReturnValue({
       isAuthenticated: true,
-      logout: jest.fn(),
+      logout: mockLogout,
+      friendsList: [],
     });
-
 
     global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: false,
+        json: () => Promise.resolve({ message: 'Logout failed' }),
       })
     );
-
 
     console.error = jest.fn();
 
@@ -172,11 +169,10 @@ describe('Header Component', () => {
     useAuth.mockReturnValue({
       isAuthenticated: true,
       logout: jest.fn(),
+      friendsList: [],
     });
 
-
     global.fetch = jest.fn(() => Promise.reject('Network error'));
-
 
     console.error = jest.fn();
 
@@ -190,8 +186,8 @@ describe('Header Component', () => {
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
 
-    expect(console.error).toHaveBeenCalledWith('Error:', 'Network error');
-    expect(toast.error).toHaveBeenCalledWith('An error occurred. Please try again.');
-    expect(useAuth().logout).not.toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith('Fetch error:', 'Network error');
+    expect(toast.error).toHaveBeenCalledWith('Network error. Please try again later.');
+    expect(useAuth().logout).toHaveBeenCalled();
   });
 });
