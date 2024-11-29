@@ -33,7 +33,8 @@ class TriviaServiceIntegrationTest {
 	private TriviaService triviaService;
 	
 
-	@Test
+	@SuppressWarnings("unchecked")
+    @Test
 	public void testGetQuestions_Success(){
 
 		TriviaRequestDTO request = new TriviaRequestDTO();
@@ -53,7 +54,8 @@ class TriviaServiceIntegrationTest {
 		assertNotNull(response.getResponseCode(), "The response code should not be null");
 	}
 
-	@Test
+	@SuppressWarnings("unchecked")
+    @Test
     public void testGetQuestions_NoResults() {
 
         TriviaRequestDTO request = new TriviaRequestDTO();
@@ -71,6 +73,7 @@ class TriviaServiceIntegrationTest {
         });
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testGetQuestions_InvalidParameter() {
 
@@ -88,6 +91,7 @@ class TriviaServiceIntegrationTest {
         });
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testGetQuestions_UnknownStatusCode() {
 
