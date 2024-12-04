@@ -30,21 +30,29 @@ const SignInPage = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(formData),
+                credentials: 'include'
             });
-            if (response.ok) {
+            if ( response && response.ok) {
                 const data = await response.json()
-                localStorage.setItem('token', data.token);
+                console.log(data)
                 localStorage.setItem('username', data.username);
-                toast.success('Log-in successful!')
+                localStorage.setItem('friendsList', JSON.stringify(data.friends));                toast.success('Log-in successful!')
                 console.log('Sign-in successful');
                 login();
                 navigate('/');
+            } else if(response && (response.status === 404 || response.status === 401)) {
+                const errorData = await response.json();
+                console.error('Sign-in failed invalid username or password');
+                toast.error("Sign-in failed: Invalid username or password!");
             } else {
+                const errorData = await response.json();
                 console.error('Sign-in failed');
+                toast.error(`Sign-in failed: ${errorData.message}`);
             }
         } catch (error) {
             console.error('Error:', error);
+            toast.error('An error occurred. Please try again.');
         }
     };
 

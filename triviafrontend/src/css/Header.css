@@ -71,5 +71,72 @@
   color: #ffffff;
 }
 
-  
-  
+.navbar .auth-item .search-bar {
+  display: grid;
+  align-items: center;
+  margin-left: 200px;
+  margin-top: -1px; 
+  position: absolute;
+}
+
+.navbar .auth-item .search-container {
+  position: relative;
+  width: 140px;
+}
+
+.navbar .auth-item .search-container .search-input {
+  width: 100%;
+  padding: 6px 7px;
+  padding-right: 30px; 
+  border: 2px solid;
+  border-radius: 5px;
+  outline: none;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.navbar .auth-item .search-container .search-input::placeholder {
+  color: #aaa;
+}
+
+.navbar .auth-item .search-container .search-input:focus {
+  border-color: #21a1f1;
+}
+
+.navbar .auth-item .search-container .search-icon {
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-80%);
+  color: #aaa;
+  font-size: 16px;
+  pointer-events: none; /* Prevent the icon from blocking input clicks */
+}
+
+.navbar .auth-item .search-container .search-input:focus + .search-icon {
+  color: #21a1f1;
+}
+
+.navbar .auth-item .search-bar .search-results {
+  color: black;
+  border: 2px solid #242323;
+  width: 100%;
+  border-radius: 5px;
+  background: white;
+  padding: 8px 20px;
+  font-size: 16px;
+  line-height: 27px; 
+}
+
+.add-friend-button{
+  margin-left: 10px;
+  background-color: green;
+}
+.delete-friend-button{
+  margin-left: 10px;
+  background-color: red;
+}
+.add-friend-button:hover,
+.delete-friend-button:hover {
+  cursor: pointer;
+}

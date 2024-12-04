@@ -1,7 +1,7 @@
 import React, { useState } from 'react';  
 import { useNavigate } from 'react-router-dom';  
-import { useAuth } from '../AuthContext';  
 import { toast } from 'react-toastify';  
+import { useAuth } from '../AuthContext';
 import '../css/AuthPage.css';
 
 const SignUpPage = () => {
@@ -11,9 +11,9 @@ const SignUpPage = () => {
         password: '',
         confirmPassword: ''
     });
+    const { login, logout } = useAuth();
 
     const navigate = useNavigate();  
-    const { login } = useAuth(); 
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -25,6 +25,7 @@ const SignUpPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        logout();
         if (formData.password !== formData.confirmPassword) {
             alert('Passwords do not match.');
             return;
@@ -41,18 +42,22 @@ const SignUpPage = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(dataToSend)
+                body: JSON.stringify(dataToSend),
+                credentials: 'include'
             });
             if (response.ok) {
-                const data = await response.json();
-                localStorage.setItem('token', data.token);
+                const data = await response.json()
                 localStorage.setItem('username', data.username);
-                toast.success('Account successfully created!');  // Show success message
+                toast.success('Account successfully created!');
                 login();
-                navigate('/');
+                navigate('/')
             } else {
                 const errorData = await response.json();
-                toast.error(`Sign up failed: ${errorData.message}`);  // Show error message
+                if (errorData.message) {
+                    toast.error(`Sign up failed: ${errorData.message}`);  // Show error message
+                } else {
+                    toast.error('Sign up failed: Unknown error occurred');  // Show generic error message
+                }
             }
         } catch (error) {
             console.error('Error:', error);
@@ -88,6 +93,7 @@ const SignUpPage = () => {
                     id="password"
                     value={formData.password}
                     onChange={handleChange}
+                    minLength="8"
                     required
                 />
                 <label for="confirmPassword">Confirm Password:</label>
@@ -96,6 +102,7 @@ const SignUpPage = () => {
                     name="confirmPassword"
                     id="confirmPassword"
                     value={formData.confirmPassword}
+                    minLength="8"
                     onChange={handleChange}
                     required
                 />

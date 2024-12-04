@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,15 +42,21 @@ public class LeaderboardController {
     @GetMapping("/allTime")
     public ResponseEntity<List<AllTimeLeaderboardDTO>> getLeaderboard() {
         logger.info("Leaderboard request received");
-        try {
-            List<AllTimeLeaderboardDTO> leaderboard = leaderboardService.getAllTimeLeaderboard();
-            return ResponseEntity.ok(leaderboard);
-        } catch (Exception e) {
-            logger.error("An error occurred while fetching the leaderboard", e);
-            return ResponseEntity.status(500).body(null);
+
+        // Ensure the user is authenticated
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            try {
+                List<AllTimeLeaderboardDTO> leaderboard = leaderboardService.getAllTimeLeaderboard();
+                return ResponseEntity.ok(leaderboard);
+            } catch (Exception e) {
+                logger.error("An error occurred while fetching the leaderboard", e);
+                return ResponseEntity.status(500).body(null);
+            }
+        } else {
+            return ResponseEntity.status(401).body(null);
         }
     }
-
     @GetMapping("/personal")
     public ResponseEntity<?> getPersonalLeaderboard(@RequestParam String username) {
         try {

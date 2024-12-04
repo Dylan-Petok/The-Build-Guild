@@ -1,47 +1,60 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../AuthContext';
 import '../css/ProfilePage.css';
+import fetchInterceptor from '../utils/fetchInterceptor';
 
 const ProfilePage = () => {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, logout } = useAuth();
     const [profileData, setProfileData] = useState({
-        totalGamesPlayed: 115,
-        highestScore: 100,
-        globalRank: 1,
-        currentScore: 700
+        totalGamesPlayed: 'N/A',
+        highestScore: 'N/A',
+        globalRank: 'N/A',
+        currentScore: 'N/A',
     });
+    const [username, setUsername] = useState('');
 
     useEffect(() => {
+        const storedUsername = localStorage.getItem('username');
+        setUsername(storedUsername);
+
         if (isAuthenticated) {
-            // Fetch profile data from the backend
-            fetch('http://localhost:8080/api/users/profileInfo', {
+            fetchInterceptor('http://localhost:8080/api/users/profileInfo', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}` 
-                }
-            })
+                },
+                credentials: 'include'
+            }, logout)
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Fetched Profile Data:', data); // Debugging API response
                     setProfileData({
-                        totalGamesPlayed: data.totalGamesPlayed,
-                        highestScore: data.highestScore,
-                        globalRank: data.globalRank,
-                        currentScore: data.currentScore
+                        totalGamesPlayed: data.gamesPlayedCount ?? 'N/A',
+                        highestScore: data.highestScoreInGame ?? 'N/A',
+                        globalRank: data.globalRank ?? 'N/A',
+                        currentScore: data.currentScore ?? 'N/A',
                     });
                 })
                 .catch(error => console.error('Error fetching profile data:', error));
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, logout]);
 
     return (
         <div className="profile-container">
-            <h1>Profile Page</h1>
+            <h1>{username}</h1>
             <div className="profile-info">
-                <p><strong>Total Games Played:</strong> {profileData.totalGamesPlayed}</p>
-                <p><strong>Highest Score in a Game:</strong> {profileData.highestScore}</p>
-                <p><strong>Global Rank:</strong> {profileData.globalRank}</p>
-                <p><strong>Current Score:</strong> {profileData.currentScore}</p>
+                <p>
+                    <strong>Total Games Played:</strong> {profileData.totalGamesPlayed}
+                </p>
+                <p>
+                    <strong>Highest Score in a Game:</strong> {profileData.highestScore}
+                </p>
+                <p>
+                    <strong>Global Rank:</strong> {profileData.globalRank}
+                </p>
+                <p>
+                    <strong>Current Score:</strong> {profileData.currentScore}
+                </p>
             </div>
 
             {/* Achievements Section */}
