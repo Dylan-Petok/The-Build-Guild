@@ -1,6 +1,7 @@
 package com.the_build_guild.trivia_game.controllers;
 
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,7 +85,7 @@ public class LeaderboardController {
                 User user = userService.findByUsername(username);
                 
     
-                List<User> friends = leaderboardService.getFriendsLeaderboard(user.getFriends());
+                List<User> friends = leaderboardService.getFriendsLeaderboard(Arrays.asList(user.getFriends()));
                 List<FriendsDTO> leaderboard = friends.stream()
                     .map(friend -> new FriendsDTO(friend.getUsername(), friend.getScore().intValue())) 
                     .collect(Collectors.toList());

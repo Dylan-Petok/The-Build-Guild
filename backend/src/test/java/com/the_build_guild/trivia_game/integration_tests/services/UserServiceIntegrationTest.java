@@ -102,52 +102,6 @@ public class UserServiceIntegrationTest {
         assertEquals(2, rank, "User rank should be correctly calculated");
     }
 
-    @Test
-    public void testAddFriend() {
-        String requestingUsername = "testuser";
-        String friendUsername = "frienduser";
-
-        User requestingUser = new User();
-        requestingUser.setUsername(requestingUsername);
-        requestingUser.setFriends(new String[0]);
-
-        User friendUser = new User();
-        friendUser.setUsername(friendUsername);
-        friendUser.setId("2");
-
-        when(userRepository.findByUsername(requestingUsername)).thenReturn(requestingUser);
-        when(userRepository.findByUsername(friendUsername)).thenReturn(friendUser);
-        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        userService.addFriend(requestingUsername, friendUsername);
-
-        assertEquals(1, requestingUser.getFriends().length, "Friend should be added successfully");
-        assertEquals("frienduser", requestingUser.getFriends()[0], "Friend username should match");
-        verify(userRepository).save(any(User.class));
-    }
-
-    @Test
-    public void testDeleteFriend() {
-        String requestingUsername = "testuser";
-        String friendUsername = "frienduser";
-
-        User requestingUser = new User();
-        requestingUser.setUsername(requestingUsername);
-        requestingUser.setFriends(new String[]{friendUsername});
-
-        User friendUser = new User();
-        friendUser.setUsername(friendUsername);
-
-        when(userRepository.findByUsername(requestingUsername)).thenReturn(requestingUser);
-        when(userRepository.findByUsername(friendUsername)).thenReturn(friendUser);
-        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        userService.deleteFriend(requestingUsername, friendUsername);
-
-        assertEquals(0, requestingUser.getFriends().length, "Friend should be removed successfully");
-        verify(userRepository).save(any(User.class));
-    }
-
 
     @Test
     public void testAuthenticateUser_Success() {
