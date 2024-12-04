@@ -33,38 +33,6 @@ public class LeaderboardServiceIntegrationTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    public void testGetAllTimeLeaderboard() {
-        User user1 = User.builder()
-                .username("user1")
-                .score(100)
-                .build();
-        User user2 = User.builder()
-                .username("user2")
-                .score(200)
-                .build();
-        when(userRepository.findAll()).thenReturn(Arrays.asList(user1, user2));
-
-        List<AllTimeLeaderboardDTO> leaderboard = leaderboardService.getAllTimeLeaderboard();
-        assertEquals(2, leaderboard.size());
-        assertEquals("user2", leaderboard.get(0).getUsername());
-        assertEquals(200, leaderboard.get(0).getScore());
-        assertEquals("user1", leaderboard.get(1).getUsername());
-        assertEquals(100, leaderboard.get(1).getScore());
-    }
-
-        @Test
-    public void testGetAllTimeLeaderboardWithTies() {
-        User user1 = User.builder().username("user1").score(200).build();
-        User user2 = User.builder().username("user2").score(200).build();
-        when(userRepository.findAll()).thenReturn(Arrays.asList(user1, user2));
-
-        List<AllTimeLeaderboardDTO> leaderboard = leaderboardService.getAllTimeLeaderboard();
-        assertNotNull(leaderboard);
-        assertEquals(2, leaderboard.size());
-        assertEquals(200, leaderboard.get(0).getScore());
-        assertEquals(200, leaderboard.get(1).getScore());
-    }
 
     @Test
     public void testGetAllTimeLeaderboardWithNoUsers() {

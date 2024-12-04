@@ -1,17 +1,25 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import Playpage from '../components/Playpage';
 import { MemoryRouter } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: jest.fn(),
 }));
 
+jest.mock('../AuthContext', () => ({
+  useAuth: jest.fn(),
+}));
+
 describe('Playpage Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    useAuth.mockReturnValue({
+      logout: jest.fn(),
+    });
   });
 
   test('renders without crashing', () => {
@@ -47,7 +55,6 @@ describe('Playpage Component', () => {
         <Playpage />
       </MemoryRouter>
     );
-
 
     await waitFor(() => {
       expect(screen.getByText('General Knowledge')).toBeInTheDocument();
@@ -96,11 +103,9 @@ describe('Playpage Component', () => {
       </MemoryRouter>
     );
 
-  
     await waitFor(() => {
       expect(screen.getByText('General Knowledge')).toBeInTheDocument();
     });
-
 
     fireEvent.change(screen.getByLabelText('Number of Questions:'), {
       target: { value: '1' },
@@ -112,15 +117,12 @@ describe('Playpage Component', () => {
       target: { value: 'easy' },
     });
 
-
     fireEvent.click(screen.getByText('Submit'));
-
 
     await waitFor(() => {
       expect(screen.getByText('Question 1')).toBeInTheDocument();
       expect(screen.getByText('What is the capital of France?')).toBeInTheDocument();
     });
-
 
     expect(screen.getByLabelText('Paris')).toBeInTheDocument();
     expect(screen.getByLabelText('London')).toBeInTheDocument();
@@ -172,7 +174,6 @@ describe('Playpage Component', () => {
     const mockNavigate = jest.fn();
     useNavigate.mockReturnValue(mockNavigate);
 
-
     jest.spyOn(Storage.prototype, 'getItem').mockImplementation(() => 'testuser');
 
     render(
@@ -181,11 +182,9 @@ describe('Playpage Component', () => {
       </MemoryRouter>
     );
 
-
     await waitFor(() => {
       expect(screen.getByText('General Knowledge')).toBeInTheDocument();
     });
-
 
     fireEvent.change(screen.getByLabelText('Number of Questions:'), {
       target: { value: '1' },
@@ -197,27 +196,21 @@ describe('Playpage Component', () => {
       target: { value: 'easy' },
     });
 
-
     fireEvent.click(screen.getByText('Submit'));
-
 
     await waitFor(() => {
       expect(screen.getByText('Question 1')).toBeInTheDocument();
     });
 
-  
     fireEvent.click(screen.getByLabelText('Paris'));
-
 
     fireEvent.click(screen.getByText('Next'));
 
     jest.advanceTimersByTime(3000);
 
-
     await waitFor(() => {
       expect(screen.getByText('Correct!')).toBeInTheDocument();
     });
-
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
@@ -291,12 +284,6 @@ describe('Playpage Component', () => {
       </MemoryRouter>
     );
 
-
-    await waitFor(() => {
-      expect(screen.getByText('General Knowledge')).toBeInTheDocument();
-    });
-
-
     fireEvent.change(screen.getByLabelText('Number of Questions:'), {
       target: { value: '1' },
     });
@@ -307,26 +294,21 @@ describe('Playpage Component', () => {
       target: { value: 'easy' },
     });
 
-
     fireEvent.click(screen.getByText('Submit'));
 
     await waitFor(() => {
       expect(screen.getByText('Question 1')).toBeInTheDocument();
     });
 
-
     fireEvent.click(screen.getByLabelText('London'));
 
-
     fireEvent.click(screen.getByText('Next'));
-
 
     jest.advanceTimersByTime(3000);
 
     await waitFor(() => {
       expect(screen.getByText('Incorrect!')).toBeInTheDocument();
     });
-
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(

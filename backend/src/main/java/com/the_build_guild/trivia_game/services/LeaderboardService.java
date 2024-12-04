@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,11 +24,16 @@ public class LeaderboardService {
     private GameRepository gameRepository;
 
     public List<AllTimeLeaderboardDTO> getAllTimeLeaderboard() {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAllByOrderByScoreDesc();
+        // Set score to 0 for users who do not have a score
+        users.forEach(user -> {
+            if (user.getScore() == null) {
+                user.setScore(0);
+            }
+        });
         return users.stream()
-                .sorted((u1, u2) -> Integer.compare(u2.getScore(), u1.getScore()))
-                .map(user -> new AllTimeLeaderboardDTO(user.getUsername(), user.getScore()))
-                .collect(Collectors.toList());
+        .map(user -> new AllTimeLeaderboardDTO(user.getUsername(), user.getScore()))
+        .collect(Collectors.toList());
     }
 
     public List<PersonalBestDTO> getPersonalLeaderboardByUsername(String username) {
@@ -46,5 +52,13 @@ public class LeaderboardService {
                     game.getDifficulty()
             ))
             .collect(Collectors.toList());
+    }
+
+    public List<User> getFriendsLeaderboard(List<String> friendIds) {
+        return friendIds.stream()
+                .map(userRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 }
