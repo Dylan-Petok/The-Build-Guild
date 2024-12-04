@@ -78,8 +78,8 @@ describe('App Component', () => {
     expect(screen.getByText('FriendsLeaderboard')).toBeInTheDocument();
   });
 
-  test('renders AllTimeLeaderboard component at /leaderboard/personal route', () => {
-    window.history.pushState({}, 'Test page', '/leaderboard/personal');
+  test('renders AllTimeLeaderboard component at /leaderboard/alltime route', () => {
+    window.history.pushState({}, 'Test page', '/leaderboard/alltime');
     render(<App />);
     expect(screen.getByText('AllTimeLeaderboard')).toBeInTheDocument();
   });

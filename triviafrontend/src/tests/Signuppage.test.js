@@ -35,6 +35,7 @@ describe('SignUpPage Component', () => {
   test('renders without crashing', () => {
     useAuth.mockReturnValue({
       login: jest.fn(),
+      logout: jest.fn(),
     });
 
     render(
@@ -47,6 +48,7 @@ describe('SignUpPage Component', () => {
   test('displays all form fields and sign-up button', () => {
     useAuth.mockReturnValue({
       login: jest.fn(),
+      logout: jest.fn(),
     });
 
     render(
@@ -65,6 +67,7 @@ describe('SignUpPage Component', () => {
   test('shows alert if passwords do not match', () => {
     useAuth.mockReturnValue({
       login: jest.fn(),
+      logout: jest.fn(),
     });
 
     jest.spyOn(window, 'alert').mockImplementation(() => {});
@@ -89,8 +92,10 @@ describe('SignUpPage Component', () => {
 
   test('submits form and handles success', async () => {
     const mockLogin = jest.fn();
+    const mockLogout = jest.fn();
     useAuth.mockReturnValue({
       login: mockLogin,
+      logout: mockLogout,
     });
 
     const mockNavigate = jest.fn();
@@ -129,6 +134,7 @@ describe('SignUpPage Component', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Sign Up' }));
     });
 
+    expect(mockLogout).toHaveBeenCalled();
     expect(global.fetch).toHaveBeenCalledWith(
       'http://localhost:8080/api/users/create',
       expect.objectContaining({
@@ -145,7 +151,6 @@ describe('SignUpPage Component', () => {
     );
 
     await waitFor(() => {
-      expect(localStorageSetItemSpy).toHaveBeenCalledWith('token', 'testtoken');
       expect(localStorageSetItemSpy).toHaveBeenCalledWith('username', 'testuser');
       expect(toast.success).toHaveBeenCalledWith('Account successfully created!');
       expect(mockLogin).toHaveBeenCalled();
@@ -155,8 +160,10 @@ describe('SignUpPage Component', () => {
 
   test('submits form and handles failure', async () => {
     const mockLogin = jest.fn();
+    const mockLogout = jest.fn();
     useAuth.mockReturnValue({
       login: mockLogin,
+      logout: mockLogout,
     });
 
     const mockNavigate = jest.fn();
@@ -192,6 +199,7 @@ describe('SignUpPage Component', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Sign Up' }));
     });
 
+    expect(mockLogout).toHaveBeenCalled();
     expect(global.fetch).toHaveBeenCalledWith(
       'http://localhost:8080/api/users/create',
       expect.any(Object)
