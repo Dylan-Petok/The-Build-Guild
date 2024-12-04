@@ -1,0 +1,32 @@
+spring:
+  session:
+    store-type: mongodb
+  data:
+    mongodb:
+      uri: mongodb+srv://admin:admin123@cluster0.jiibq.mongodb.net/triviatrove?retryWrites=true&w=majority&appName=Cluster0
+
+
+server:
+    port: 8080
+    compression:
+        enabled: true
+    error:
+        include-message: always
+    shutdown: "graceful"
+    servlet:
+      session:
+        timeout: 30m # 30 minute
+
+data:
+  initializer:
+    enabled: false
+
+trivia: 
+  api:
+    url: https://opentdb.com/api.php
+
+logging:
+  level:
+    '[org.springframework.security]': DEBUG
+    '[org.springframework.web]': DEBUG
+    '[org.springframework.session]': DEBUG
