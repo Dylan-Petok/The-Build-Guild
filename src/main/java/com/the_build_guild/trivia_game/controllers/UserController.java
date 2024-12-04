@@ -1,14 +1,21 @@
 package com.the_build_guild.trivia_game.controllers;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.the_build_guild.trivia_game.models.User;
+import com.the_build_guild.trivia_game.services.UserService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+import com.the_build_guild.trivia_game.services.GameService;
+import com.the_build_guild.trivia_game.dtos.ProfileInfoDTO;
+import com.the_build_guild.trivia_game.dtos.UserCreationDTO;
+import com.the_build_guild.trivia_game.dtos.UserLoginDTO;
+
+
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,16 +28,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.apache.catalina.connector.Response;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.the_build_guild.trivia_game.dtos.ProfileInfoDTO;
-import com.the_build_guild.trivia_game.dtos.UserCreationDTO;
-import com.the_build_guild.trivia_game.dtos.UserLoginDTO;
-import com.the_build_guild.trivia_game.models.User;
-import com.the_build_guild.trivia_game.services.GameService;
-import com.the_build_guild.trivia_game.services.UserService;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 
 @RequestMapping("/api/users")
 @RestController
@@ -216,12 +221,12 @@ public ResponseEntity<?> deleteFriend(@RequestBody Map<String, String> requestBo
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/test")
     public ResponseEntity<?> testEndpoint() {
         logger.info("Test endpoint accessed");
         return ResponseEntity.ok("Test endpoint is accessible");
     }
-
 
     
 

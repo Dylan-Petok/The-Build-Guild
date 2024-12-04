@@ -1,23 +1,5 @@
 package com.the_build_guild.trivia_game.services;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.the_build_guild.trivia_game.dtos.UserCreationDTO;
 import com.the_build_guild.trivia_game.dtos.UserLoginDTO;
 import com.the_build_guild.trivia_game.models.User;
@@ -25,6 +7,32 @@ import com.the_build_guild.trivia_game.repositories.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+
+import com.the_build_guild.trivia_game.repositories.GameRepository;
+
+import java.util.ArrayList;
+import java.util.Date;
+
+
+
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 @Service
@@ -168,12 +176,14 @@ public class UserService {
     public void addFriend(String requestingUsername, String friendUsername) {
         User requestingUser = userRepository.findByUsername(requestingUsername);
         User friendUser = userRepository.findByUsername(friendUsername);
-    
+        logger.info("User sending request: {}", requestingUser);
+        logger.info("User to be added: {}", friendUser);
+
         if (requestingUser != null && friendUser != null) {
             List<String> friendsList = new ArrayList<>(Arrays.asList(requestingUser.getFriends()));
-            if (!friendsList.contains(friendUser.getId())) { // Use ID instead of username
-                friendsList.add(friendUser.getId());
-                requestingUser.setFriends(friendsList.toArray(new String[0])); // Store IDs
+            if (!friendsList.contains(friendUser.getId())) {
+                friendsList.add(friendUser.getUsername());
+                requestingUser.setFriends(friendsList.toArray(new String[0]));
                 userRepository.save(requestingUser);
                 logger.info("Friend added: {} to user: {}", friendUsername, requestingUsername);
             } else {
@@ -184,26 +194,23 @@ public class UserService {
         }
     }
     
-    public void deleteFriend(String requestingUsername, String friendUsername) {
+
+        public void deleteFriend(String requestingUsername, String friendUsername) {
         User requestingUser = userRepository.findByUsername(requestingUsername);
         User friendUser = userRepository.findByUsername(friendUsername);
-    
+
         if (requestingUser != null && friendUser != null) {
-            List<String> friendsList = new ArrayList<>(Arrays.asList(requestingUser.getFriends()));
-            if (friendsList.contains(friendUser.getId())) { // Use ID instead of username
-                friendsList.remove(friendUser.getId());
-                requestingUser.setFriends(friendsList.toArray(new String[0])); // Store IDs
+            List<String> friendsList = new ArrayList<>(List.of(requestingUser.getFriends()));
+            if (friendsList.contains(friendUser.getUsername())) {
+                friendsList.remove(friendUser.getUsername());
+                requestingUser.setFriends(friendsList.toArray(new String[0]));
                 userRepository.save(requestingUser);
             }
         } else {
             throw new IllegalArgumentException("User not found");
         }
-    }    
-    
-    public List<User> getFriendsLeaderboard(String[] friendsIds) {
-        logger.info("Fetching leaderboard for friend IDs: {}", Arrays.toString(friendsIds));
-        return userRepository.findAllById(Arrays.asList(friendsIds)); // Ensure this fetches full User objects
-    }    
+    }
+
     
 
 }

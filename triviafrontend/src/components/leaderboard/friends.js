@@ -1,18 +1,29 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../AuthContext';
 import '../../css/Leaderboard.css';
 
-const FriendsLeaderboard = () =>{
+const FriendsLeaderboard = () => {
     const { logout } = useAuth();
     const [leaderboard, setLeaderboard] = useState([]);
     const [error, setError] = useState(false);
 
-
     useEffect(() => {
-        // Fetch leaderboard data from the backend
-        fetch('http://localhost:8080/api/leaderboard/friends')
-            .then(response => response.json())
+        // Fetch leaderboard data for friends
+        fetch('http://localhost:8080/api/users/leaderboard/friends', {
+            method: 'GET',
+            credentials: 'include', 
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch leaderboard');
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log('Friends Leaderboard Data:', data); // Debugging log
                 if (Array.isArray(data)) {
                     setLeaderboard(data);
                 } else {
@@ -22,11 +33,15 @@ const FriendsLeaderboard = () =>{
             .catch(error => {
                 console.error('Error fetching leaderboard data:', error);
                 setError(true);
-    });
-    }, [logout]);
+            });
+    }, []);
 
-    if(error){
-        return <div className="leaderboard-container">Stats are currently unavailable</div>
+    if (error) {
+        return <div className="leaderboard-container">Stats are currently unavailable.</div>;
+    }
+
+    if (leaderboard.length === 0) {
+        return <div className="leaderboard-container">No friends to display.</div>;
     }
 
     return (
@@ -41,11 +56,11 @@ const FriendsLeaderboard = () =>{
                     </tr>
                 </thead>
                 <tbody>
-                    {leaderboard.map((user, index) => (
-                        <tr key={user.userId}>
+                    {leaderboard.map((friend, index) => (
+                        <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>{user.username}</td>
-                            <td>{user.score}</td>
+                            <td>{friend.username}</td>
+                            <td>{friend.score}</td>
                         </tr>
                     ))}
                 </tbody>

@@ -16,8 +16,6 @@ public interface UserRepository extends MongoRepository<User, String>{
     List<User> findAllByOrderByScoreDesc();
 
     List<User> findByUsernameContainingIgnoreCase(String username);
-    
-    List<User> findAllByIdIn(List<String> friendsIds);
 
     User findByEmail(String email);
 
