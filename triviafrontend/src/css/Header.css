@@ -114,7 +114,7 @@
 }
 
 .navbar .auth-item .search-container .search-input:focus + .search-icon {
-  color: #21a1f1;
+  color: #21a1f100;
 }
 
 .navbar .auth-item .search-bar .search-results {
