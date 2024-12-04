@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.List;
 
@@ -221,12 +222,35 @@ public ResponseEntity<?> deleteFriend(@RequestBody Map<String, String> requestBo
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
-
     @GetMapping("/test")
     public ResponseEntity<?> testEndpoint() {
         logger.info("Test endpoint accessed");
         return ResponseEntity.ok("Test endpoint is accessible");
     }
+    @GetMapping("/leaderboard/friends")
+    public ResponseEntity<?> getFriendsLeaderboard(HttpServletRequest request) {
+        try {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof UserDetails) {
+                UserDetails userDetails = (UserDetails) principal;
+                String username = userDetails.getUsername();
+                User user = userService.findByUsername(username);
+    
+                List<User> friends = userService.getFriendsLeaderboard(user.getFriends());
+                List<FriendsDTO> leaderboard = friends.stream()
+                    .map(friend -> new FriendsDTO(friend.getUsername(), friend.getScore().intValue())) 
+                    .collect(Collectors.toList());
+                return ResponseEntity.ok(leaderboard);
+            } else {
+                return ResponseEntity.status(401).body("Unauthorized");
+            }
+        } catch (Exception e) {
+            logger.error("Error fetching friends leaderboard", e);
+            return ResponseEntity.status(500).body("An error occurred while fetching the leaderboard");
+        }
+    }
+    
+
 
     
 

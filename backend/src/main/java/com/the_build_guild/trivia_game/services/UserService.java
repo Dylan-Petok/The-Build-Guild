@@ -210,5 +210,10 @@ public class UserService {
             throw new IllegalArgumentException("User not found");
         }
     }
+    public List<User> getFriendsLeaderboard(String[] friendsIds) {
+        
+        return userRepository.findAllByIdIn(Arrays.asList(friendsIds));
+    }
+    
 
 }
