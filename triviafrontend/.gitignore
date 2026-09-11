@@ -8,6 +8,12 @@
 # testing
 /coverage
 
+# Playwright E2E output (screenshots/traces from test runs, not source)
+/test-results
+/playwright-report
+/blob-report
+/playwright/.cache
+
 # production
 /build
 

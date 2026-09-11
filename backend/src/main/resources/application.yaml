@@ -3,7 +3,7 @@ spring:
     store-type: mongodb
   data:
     mongodb:
-      uri: mongodb+srv://admin:admin123@cluster0.jiibq.mongodb.net/triviatrove?retryWrites=true&w=majority&appName=Cluster0
+      uri: mongodb://localhost:27017/triviatrove
 
 
 server:
